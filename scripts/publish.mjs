@@ -6,9 +6,11 @@ const root = path.resolve(import.meta.dirname, '..');
 const remote = 'https://github.com/zixuanb3/zixuanb3.github.io.git';
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, { cwd: root, encoding: 'utf8', windowsHide: true, env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }, ...options });
-  if (result.stdout) process.stdout.write(result.stdout);
-  if (result.stderr) process.stderr.write(result.stderr);
-  if (result.error || result.status !== 0) throw new Error(options.failure || `步骤未完成：${command} ${args[0] || ''}`);
+  if (result.error || result.status !== 0) {
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    throw new Error(options.failure || `步骤未完成：${command} ${args[0] || ''}`);
+  }
   return result.stdout?.trim() || '';
 }
 try {
