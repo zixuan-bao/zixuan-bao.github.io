@@ -1,0 +1,50 @@
+{{ $page := . }}
+
+{{ $titles := slice }}
+
+{{ if $page.IsHome }}
+    {{ $same := and $page.Title site.Title (eq $page.Title site.Title) }}
+
+    {{ if $same }}
+        {{ $titles = slice (site.Title | markdownify | plainify | htmlUnescape) }}
+    {{ else }}
+        {{ if $page.Title }}
+            {{ $titles = $titles | append ($page.Title | markdownify | plainify | htmlUnescape) }}
+        {{ end }}
+
+        {{ if site.Title }}
+            {{ $titles = $titles | append (site.Title | markdownify | plainify | htmlUnescape) }}
+        {{ end }}
+    {{ end }}
+{{ else }}
+    {{ with $page.Title }}
+        {{ $titles = slice (. | markdownify | plainify | htmlUnescape) }}
+    {{ end }}
+
+    {{ range .Ancestors }}
+        {{ $title := cond .IsHome (site.Title | default .Title) .Title }}
+
+        {{ with $title }}
+            {{ $titles = $titles | append (. | markdownify | plainify | htmlUnescape) }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ $title := delimit $titles " · " }}
+
+<head>
+    {{ partial "paige/func-include.html" (dict "name" "head-first%s.html" "page" $page) | safeHTML }}
+    {{ partial "paige/metas.html" $page }}
+
+    {{ with $title }}
+        <title>{{ . }}</title>
+    {{ end }}
+
+    {{ partial "paige/links.html" $page }}
+
+    {{ with $page.Param "paige.style" }}
+        <style>{{ . | safeCSS }}</style>
+    {{ end }}
+
+    {{ partial "paige/func-include.html" (dict "name" "head-last%s.html" "page" $page) | safeHTML }}
+</head>

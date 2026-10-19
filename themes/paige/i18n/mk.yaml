@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Мрвици
+paige_collections:
+  other: Колекции
+paige_edit:
+  other: Уреди
+paige_error:
+  other: Грешка
+paige_figure:
+  other: Фигура
+paige_first:
+  other: Прва
+paige_history:
+  other: Историја
+paige_home:
+  other: Дома
+paige_javascript_is_required:
+  other: JavaScript е потребен
+paige_last:
+  other: Последна
+paige_menu:
+  other: Мени
+paige_minutes:
+  one: минута
+  other: минути
+paige_next:
+  other: Следна
+paige_nothing_found:
+  other: Ништо не е најдено
+paige_page_list_navigation:
+  other: Навигација низ списокот на страници
+paige_pages:
+  other: Страници
+paige_previous:
+  other: Претходна
+paige_query:
+  other: Питање
+paige_search:
+  other: Барај
+paige_searching:
+  other: Барање
+paige_sections:
+  other: Делovi
+paige_something_found:
+  other: Најдено е нешто
+paige_words:
+  one: збор
+  other: зборови

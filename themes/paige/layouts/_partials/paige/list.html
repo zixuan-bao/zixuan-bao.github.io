@@ -1,0 +1,130 @@
+{{ $page := . }}
+
+{{ define "pagination" }}
+    {{ $params := . }}
+
+    {{ $page := .page }}
+    {{ $pager := .pager }}
+
+    {{ if or $pager.HasPrev $pager.HasNext }}
+        <div id="paige-page-pagination">
+            <div class="d-flex justify-content-center">
+                <nav aria-label="{{ i18n `paige_page_list_navigation` }}">
+                    <ul class="pagination">
+                        {{ with $page.Paginator }}
+                            <li class="page-item {{ if eq .PageNumber .First.PageNumber }} disabled {{ end }}">
+                                <a aria-label="{{ i18n `paige_first` }}" class="page-link" href="{{ .First.URL }}"><span aria-hidden="true">&laquo;</span></a>
+                            </li>
+
+                            <li class="page-item {{ if not .Prev }} disabled {{ end }}">
+                                <a {{ if .Prev }} aria-label="{{ i18n `paige_previous` }}" {{ end }} class="page-link" {{ with .Prev }} href="{{ .URL }}" {{ end }}>
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                </a>
+                            </li>
+
+                            <li class="page-item {{ if not .Next }} disabled {{ end }}">
+                                <a {{ if .Next }} aria-label="{{ i18n `paige_next` }}" {{ end }} class="page-link" {{ with .Next }} href="{{ .URL }}" {{ end }}>
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                </a>
+                            </li>
+
+                            <li class="page-item {{ if eq .PageNumber .Last.PageNumber }} disabled {{ end }}">
+                                <a aria-label="{{ i18n `paige_last` }}" class="page-link" href="{{ .Last.URL }}"><span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                        {{ end }}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    {{ end }}
+{{ end }}
+
+{{ $collections := slice }}
+{{ $pages := slice }}
+{{ $sections := slice }}
+
+{{ if $page.IsHome }}
+    {{ range $name, $taxonomy := site.Taxonomies }}
+        {{ if $taxonomy.Page }}
+            {{ $collections = $collections | append $taxonomy.Page }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ $collections = $collections | and ($page.Param "paige.pages.disable_collections" | not) }}
+
+{{ if in (slice "taxonomy" "term") $page.Kind }}
+    {{ range $page.Pages }}
+        {{ if .IsSection }}
+            {{ $sections = $sections | append . }}
+        {{ else }}
+            {{ $pages = $pages | append . }}
+        {{ end }}
+    {{ end }}
+
+    {{ $pages = sort $pages "LinkTitle" | and ($page.Param "paige.pages.disable_pages" | not) }}
+    {{ $sections = sort $sections "LinkTitle" | and ($page.Param "paige.pages.disable_sections" | not) }}
+{{ else }}
+    {{ $pages = complement $page.Sections $page.Pages | and ($page.Param "paige.pages.disable_pages" | not) }}
+    {{ $sections = $page.Sections | and ($page.Param "paige.pages.disable_sections" | not) }}
+{{ end }}
+
+{{ with $collections }}
+    <div id="paige-page-collections">
+        {{ if or $sections $pages }}
+            <h2 class="h5 text-center" id="paige-page-collections-header">{{ i18n "paige_collections" }}</h2>
+        {{ end }}
+
+        {{ if or $sections $pages }}
+            {{ range . }}
+                {{ partial "paige/list-item.html" (dict "item" . "list" $page) }}
+            {{ end }}
+        {{ else }}
+            {{ $pager := $page.Paginate . }}
+
+            {{ range $pager.Pages }}
+                {{ partial "paige/list-item.html" (dict "item" . "list" $page) }}
+            {{ end }}
+
+            {{ template "pagination" (dict "page" $page "pager" $pager) }}
+        {{ end }}
+    </div>
+{{ end }}
+
+{{ with $sections }}
+    <div id="paige-page-sections">
+        {{ if or $collections $pages }}
+            <h2 class="h5 text-center" id="paige-page-sections-header">{{ i18n "paige_sections" }}</h2>
+        {{ end }}
+
+        {{ if $pages }}
+            {{ range . }}
+                {{ partial "paige/list-item.html" (dict "item" . "list" $page) }}
+            {{ end }}
+        {{ else }}
+            {{ $pager := $page.Paginate . }}
+
+            {{ range $pager.Pages }}
+                {{ partial "paige/list-item.html" (dict "item" . "list" $page) }}
+            {{ end }}
+
+            {{ template "pagination" (dict "page" $page "pager" $pager) }}
+        {{ end }}
+    </div>
+{{ end }}
+
+{{ with $pages }}
+    <div id="paige-page-pages">
+        {{ if or $collections $sections }}
+            <h2 class="h5 text-center" id="paige-page-pages-header">{{ i18n "paige_pages" }}</h2>
+        {{ end }}
+
+        {{ $pager := $page.Paginate . }}
+
+        {{ range $pager.Pages }}
+            {{ partial "paige/list-item.html" (dict "item" . "list" $page) }}
+        {{ end }}
+
+        {{ template "pagination" (dict "page" $page "pager" $pager) }}
+    </div>
+{{ end }}

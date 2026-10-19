@@ -1,0 +1,30 @@
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v6"
+      - run: "sudo snap install --edge hugo"
+      - run: "sudo snap install dart-sass"
+      - id: "pages"
+        uses: "actions/configure-pages@v6"
+      - run: "cd example && hugo --baseURL ${{ steps.pages.outputs.base_url }} --environment production --minify"
+      - uses: "actions/upload-pages-artifact@v5"
+        with:
+          path: "./example/public"
+  deploy:
+    environment:
+      name: "github-pages"
+      url: "${{ steps.pages.outputs.base_url }}"
+    if: "github.ref == 'refs/heads/master'"
+    needs: "build"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/deploy-pages@v5"
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+permissions:
+  contents: "read"
+  id-token: "write"
+  pages: "write"

@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Brødsmuler
+paige_collections:
+  other: Samlinger
+paige_edit:
+  other: Rediger
+paige_error:
+  other: Feil
+paige_figure:
+  other: Figur
+paige_first:
+  other: Første
+paige_history:
+  other: Historikk
+paige_home:
+  other: Hjem
+paige_javascript_is_required:
+  other: JavaScript kreves
+paige_last:
+  other: Siste
+paige_menu:
+  other: Meny
+paige_minutes:
+  one: minutt
+  other: minutter
+paige_next:
+  other: Neste
+paige_nothing_found:
+  other: Ingenting funnet
+paige_page_list_navigation:
+  other: Navigasjon i sidene
+paige_pages:
+  other: Sider
+paige_previous:
+  other: Forrige
+paige_query:
+  other: Spørsmål
+paige_search:
+  other: Søk
+paige_searching:
+  other: Søker
+paige_sections:
+  other: Seksjoner
+paige_something_found:
+  other: Funnet noe
+paige_words:
+  one: ord
+  other: ord

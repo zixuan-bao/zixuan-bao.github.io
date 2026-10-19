@@ -1,0 +1,11 @@
+{{ $params := . }}
+
+{{ $class := $params.class }}
+{{ $content := $params.content }}
+{{ $href := $params.href }}
+{{ $page := $params.page }}
+{{ $style := $params.style }}
+
+{{ $target := partial "paige/func-target.html" (dict "page" $page "url" $href) }}
+
+<a {{ with $class }} class="{{ . }}" {{ end }} {{ with $href }} href="{{ . }}" {{ end }} {{ with $style }} style="{{ . | safeCSS }}" {{ end }} {{ with $target }} target="{{ . }}" {{ end }}>{{ $content }}</a>

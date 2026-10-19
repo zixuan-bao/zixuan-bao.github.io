@@ -1,0 +1,14 @@
+<section class="about-block about-block-{{ .type }}">
+{{ with .title }}<h2>{{ . }}</h2>{{ end }}
+{{ if eq .type "image" }}
+  {{ with .image }}<figure><img src="{{ . | relURL }}" alt="{{ $.alt }}" loading="lazy">{{ with $.caption }}<figcaption>{{ . }}</figcaption>{{ end }}</figure>{{ end }}
+{{ else if eq .type "columns" }}
+  <div class="block-columns"><div>{{ .text | markdownify }}</div><div>{{ .text_right | markdownify }}</div></div>
+{{ else if eq .type "links" }}
+  <ul class="block-links">{{ range .items }}<li><a href="{{ .url | relURL }}" target="_blank" rel="noopener noreferrer">{{ .title }} ↗</a>{{ with .text }}<p>{{ . }}</p>{{ end }}</li>{{ end }}</ul>
+{{ else if eq .type "timeline" }}
+  <ul class="timeline-list">{{ range .items }}<li>{{ with .date }}<time>{{ . }}</time>{{ end }}<strong>{{ .title }}</strong>{{ with .text }}<p>{{ . }}</p>{{ end }}</li>{{ end }}</ul>
+{{ else }}
+  {{ .text | markdownify }}
+{{ end }}
+</section>

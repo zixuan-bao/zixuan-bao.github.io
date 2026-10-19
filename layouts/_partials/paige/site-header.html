@@ -1,0 +1,15 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="identity" href="{{ site.Home.RelPermalink }}" aria-label="{{ site.Title }} — home">
+    <img class="nav-avatar" src="{{ hugo.Data.profile.avatar | relURL }}" width="36" height="36" alt="">
+    <span>{{ hugo.Data.profile.display_name }}</span>
+  </a>
+  <button class="nav-toggle icon-button" type="button" aria-expanded="false" aria-controls="main-navigation" aria-label="Open navigation">{{ partial "icon.html" "menu" }}</button>
+  <nav id="main-navigation" class="main-nav" aria-label="Main navigation">
+    {{ range site.Menus.main }}
+      {{ $active := or ($.IsMenuCurrent "main" .) ($.HasMenuCurrent "main" .) }}
+      <a href="{{ .URL }}" {{ if $active }}class="active" aria-current="page"{{ end }}>{{ .Name }}</a>
+    {{ end }}
+  </nav>
+  <a class="search-trigger icon-button" href="{{ "search/" | relURL }}" aria-label="Search the website">{{ partial "icon.html" "search" }}</a>
+</header>

@@ -1,0 +1,16 @@
+{{ $content := chomp .InnerDeindent | markdownify }}
+{{ $tabs := .Page.Scratch.Get "paige-tabs" | default 0 }}
+
+{{ if not $content }}
+    {{ errorf "layouts/_shortcodes/paige/tab/button.html: no content" }}
+{{ end }}
+
+{{ .Page.Scratch.Add "paige-tabs-button" 1 }}
+
+{{ $buttons := .Page.Scratch.Get "paige-tabs-button" }}
+
+{{ $active := eq $buttons 1 }}
+
+<li class="nav-item" role="presentation">
+    <button aria-controls="paige-tabs-{{ $tabs }}-pane-{{ $buttons }}" aria-selected="{{ $active }}" class="{{ if $active }} active {{ end }} nav-link" data-bs-target="#paige-tabs-{{ $tabs }}-pane-{{ $buttons }}" data-bs-toggle="tab" id="paige-tabs-{{ $tabs }}-button-{{ $buttons }}" role="tab" type="button">{{ $content }}</button>
+</li>

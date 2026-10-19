@@ -1,0 +1,109 @@
+{{ $context := . }}
+
+{{ $anchor := $context.Anchor }}
+{{ $attrs := $context.Attributes }}
+{{ $level := $context.Level }}
+{{ $page := $context.Page }}
+{{ $text := $context.Text }}
+
+{{ $maximize := $page.Param "paige.pages.maximize_heading_levels" }}
+{{ $minimize := $page.Param "paige.pages.minimize_heading_levels" }}
+{{ $normalize := $page.Param "paige.pages.normalize_heading_levels" }}
+
+{{ $attrs = merge $attrs (dict "id" $anchor) }}
+
+{{ if and (or $maximize $minimize $normalize) (len $page.Fragments.HeadingsMap) }}
+    {{ $levels := dict }}
+
+    {{ with $page.Store.Get "paige-render-heading" }}
+        {{ $levels = .levels }}
+    {{ else }}
+        {{ $largest := 0 }}
+        {{ $maximum := $page.Param "paige.pages.maximum_heading_level" }}
+        {{ $minimum := $page.Param "paige.pages.minimum_heading_level" }}
+        {{ $smallest := 7 }}
+
+        {{ range $k, $v := $page.Fragments.HeadingsMap }}
+            {{ $levels = merge $levels (dict (string $v.Level) $v.Level) }}
+
+            {{ if gt $v.Level $largest }}
+                {{ $largest = $v.Level }}
+            {{ end }}
+
+            {{ if lt $v.Level $smallest }}
+                {{ $smallest = $v.Level }}
+            {{ end }}
+        {{ end }}
+
+        {{ if $normalize }}
+            {{ range $x := seq (add $smallest 1) 5 }}
+                {{ if isset $levels (string $x) | not }}
+                    {{ range $y := seq (add $x 1) 6 }}
+                        {{ $key := string $y }}
+
+                        {{ if isset $levels $key }}
+                            {{ $levels = merge $levels (dict $key (sub (index $levels $key) 1)) }}
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+
+            {{ $largest = sub (add $smallest (len $levels)) 1}}
+        {{ end }}
+
+        {{ if $maximize }}
+            {{ $cap := cond (and $maximum (le $largest $maximum)) $maximum 6 }}
+
+            {{ $diff := sub $cap $largest }}
+
+            {{ range $old, $new := $levels }}
+                {{ $levels = merge $levels (dict $old (add $new $diff)) }}
+            {{ end }}
+        {{ else if $minimize }}
+            {{ $cap := cond (and $minimum (ge $smallest $minimum)) $minimum 2 }}
+
+            {{ $diff := sub $smallest $cap }}
+
+            {{ range $old, $new := $levels }}
+                {{ $levels = merge $levels (dict $old (sub $new $diff)) }}
+            {{ end }}
+        {{ end }}
+
+        {{ $page.Store.Set "paige-render-heading" (dict "levels" $levels) }}
+    {{ end }}
+
+    {{ $new := index $levels (string $level) }}
+
+    {{ if ne $level $new }}
+        {{ $class := slice }}
+        {{ $found := false }}
+
+        {{ range $k, $v := $attrs }}
+            {{ if eq $k "class" }}
+                {{ range split $v " " }}
+                    {{ if . }}
+                        {{ $class = $class | append . }}
+
+                        {{ if in (slice "h1" "h2" "h3" "h4" "h5" "h6") . }}
+                            {{ $found = true }}
+                        {{ end }}
+                    {{ end }}
+                {{ end }}
+
+                {{ break }}
+            {{ end }}
+        {{ end }}
+
+        {{ if not $found }}
+            {{ $class = $class | append (print "h" $new) }}
+
+            {{ $class = delimit (sort $class) " " }}
+
+            {{ $attrs = merge $attrs (dict "class" $class) }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+<h{{ $level }} {{ range $k, $v := $attrs }} {{ printf `%s="%s"` $k $v | safeHTMLAttr }} {{ end }}>
+    <a href="#{{ $anchor }}" style="color: rgba(var(--bs-body-color-rgb), var(--bs-text-opacity)); text-decoration: none">{{ $text }}</a>
+</h{{ $level }}>

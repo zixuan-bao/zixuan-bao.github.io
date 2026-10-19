@@ -1,0 +1,72 @@
+{
+  "accent": "#2864d9",
+  "accent_dark": "#83adff",
+  "body_font": "sans",
+  "heading_font": "serif",
+  "body_size": 16,
+  "hero_size": 76,
+  "section_size": 42,
+  "item_size": 21,
+  "caption_size": 11,
+  "nav_size": 13,
+  "image_radius": 5,
+  "scopes": [
+    {
+      "section": "about",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 15,
+      "page_title_size": 68
+    },
+    {
+      "section": "research",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 13,
+      "page_title_size": 68
+    },
+    {
+      "section": "notes",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 13,
+      "page_title_size": 68
+    },
+    {
+      "section": "thoughts",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 13,
+      "page_title_size": 68
+    },
+    {
+      "section": "writings",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 13,
+      "page_title_size": 68
+    },
+    {
+      "section": "gallery",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 13,
+      "page_title_size": 68
+    },
+    {
+      "section": "resources",
+      "title_font": "inherit",
+      "title_size": 42,
+      "text_font": "inherit",
+      "text_size": 13,
+      "page_title_size": 68
+    }
+  ],
+  "caption_font": "sans"
+}

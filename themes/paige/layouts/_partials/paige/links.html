@@ -1,0 +1,46 @@
+{{ $page := . }}
+
+{{ $color := $page.Param "paige.site.color" | default "#0d6efd" }}
+{{ $scheme := $page.Param "paige.site.color_scheme" | default "auto" }}
+
+{{ $context := dict "color" $color "color_scheme" $scheme }}
+
+{{ if fileExists "static/apple-touch-icon.png" }}
+    <link href="{{ relLangURL `apple-touch-icon.png` }}" rel="apple-touch-icon" sizes="180x180">
+{{ end }}
+
+{{ if fileExists "static/favicon-96x96.png" }}
+    <link href="{{ relLangURL `favicon-96x96.png` }}" rel="icon" sizes="96x96" type="image/png">
+{{ end }}
+
+{{ if fileExists "static/favicon.ico" }}
+    <link href="{{ relLangURL `favicon.ico` }}" rel="shortcut icon">
+{{ end }}
+
+{{ if fileExists "static/favicon.svg" }}
+    <link href="{{ relLangURL `favicon.svg` }}" rel="icon" type="image/svg+xml">
+{{ end }}
+
+{{ if fileExists "static/web-app-manifest-192x192.png" }}
+    <link href="{{ relLangURL `web-app-manifest-192x192.png` }}" rel="icon" type="image/png">
+{{ end }}
+
+{{ if fileExists "static/web-app-manifest-512x512.png" }}
+    <link href="{{ relLangURL `web-app-manifest-512x512.png` }}" rel="icon" type="image/png">
+{{ end }}
+
+{{ if fileExists "assets/site.webmanifest" }}
+    <link href="{{ (resources.Get `site.webmanifest` | resources.ExecuteAsTemplate `site.webmanifest` .).RelPermalink }}" rel="manifest">
+{{ end }}
+
+{{ partial "paige/tag-link.html" (dict "href" "css/paige/paige.css" "page" $page "template" true "context" $page) }}
+{{ partial "paige/tag-link.html" (dict "href" "css/paige/bootstrap/paige.scss" "page" $page "sass" true "template" true "context" $context) }}
+{{ partial "paige/tag-link.html" (dict "href" "css/paige/bootstrap-icons/bootstrap-icons.css" "page" $page) }}
+
+{{ if $page.Param "paige.enable_math" }}
+    {{ partial "paige/tag-link.html" (dict "href" "css/paige/katex/katex.min.css") }}
+{{ end }}
+
+{{ range $page.AlternativeOutputFormats }}
+    <link href="{{ .RelPermalink }}" rel="{{ .Rel }}" type="{{ .MediaType }}">
+{{ end }}

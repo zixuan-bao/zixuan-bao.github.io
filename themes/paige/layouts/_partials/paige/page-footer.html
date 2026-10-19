@@ -1,0 +1,54 @@
+{{ $page := . }}
+
+{{ $edit := $page.Param "paige.site.edit_url" | and ($page.Param "paige.pages.disable_edit" | not) }}
+{{ $first := templates.Exists "partials/paige/page-footer-first.html" }}
+{{ $history := $page.Param "paige.site.history_url" | and ($page.Param "paige.pages.disable_history" | not) }}
+{{ $last := templates.Exists "partials/paige/page-footer-last.html" }}
+{{ $next := $page.NextInSection | and ($page.Param "paige.pages.disable_next" | not) }}
+{{ $prev := $page.PrevInSection | and ($page.Param "paige.pages.disable_prev" | not) }}
+
+{{ if $page.File }}
+    {{ if $edit }}
+        {{ $edit = printf $edit $page.File.Path }}
+    {{ end }}
+
+    {{ if $history }}
+        {{ $history = printf $history $page.File.Path }}
+    {{ end }}
+{{ end }}
+
+{{ if or $edit $history $first $last $next $prev }}
+    <footer class="mw-100" id="paige-page-footer">
+        {{ partial "paige/func-include.html" (dict "name" "page-footer-first%s.html" "page" $page) | safeHTML }}
+
+        {{ if or $edit $history }}
+            <div id="paige-page-file">
+                {{ with $edit }}
+                    <div class="paige-row-short text-center text-secondary" id="paige-page-edit">
+                        <a class="link-secondary" href="{{ . }}">{{ i18n "paige_edit" }}</a>
+                    </div>
+                {{ end }}
+
+                {{ with $history }}
+                    <div class="paige-row-short text-center text-secondary" id="paige-page-history">
+                        <a class="link-secondary" href="{{ . }}">{{ i18n "paige_history" }}</a>
+                    </div>
+                {{ end }}
+            </div>
+        {{ end }}
+
+        {{ if or $next $prev }}
+            <div id="paige-page-siblings">
+                {{ with $prev }}
+                    <div class="paige-row-short text-center text-secondary" id="paige-page-next"><a class="link-secondary" href="{{ .Permalink }}">{{ .LinkTitle }}</a> &rsaquo;</div>
+                {{ end }}
+
+                {{ with $next }}
+                    <div class="paige-row-short text-center text-secondary" id="paige-page-prev">&lsaquo; <a class="link-secondary" href="{{ .Permalink }}">{{ .LinkTitle }}</a></div>
+                {{ end }}
+            </div>
+        {{ end }}
+
+        {{ partial "paige/func-include.html" (dict "name" "page-footer-last%s.html" "page" $page) | safeHTML }}
+    </footer>
+{{ end }}

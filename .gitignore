@@ -1,0 +1,11 @@
+.tools/
+.hugo_build.lock
+public/
+resources/_gen/
+node_modules/
+.DS_Store
+Thumbs.db
+screenshots/
+.env
+.env.*
+*.editor-tmp

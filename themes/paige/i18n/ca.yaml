@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Miges de pa
+paige_collections:
+  other: Col·leccions
+paige_edit:
+  other: Editar
+paige_error:
+  other: Error
+paige_figure:
+  other: Figura
+paige_first:
+  other: Primer
+paige_history:
+  other: Historial
+paige_home:
+  other: Inici
+paige_javascript_is_required:
+  other: Es requereix JavaScript
+paige_last:
+  other: Últim
+paige_menu:
+  other: Menú
+paige_minutes:
+  one: minut
+  other: minuts
+paige_next:
+  other: Següent
+paige_nothing_found:
+  other: No s'ha trobat res
+paige_page_list_navigation:
+  other: Navegació per la llista de pàgines
+paige_pages:
+  other: Pàgines
+paige_previous:
+  other: Anterior
+paige_query:
+  other: Consulta
+paige_search:
+  other: Cercar
+paige_searching:
+  other: Cercant
+paige_sections:
+  other: Seccions
+paige_something_found:
+  other: S'ha trobat alguna cosa
+paige_words:
+  one: paraula
+  other: paraules

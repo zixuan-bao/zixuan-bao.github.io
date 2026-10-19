@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Breadcrumbs
+paige_collections:
+  other: Collections
+paige_edit:
+  other: Edit
+paige_error:
+  other: Error
+paige_figure:
+  other: Figure
+paige_first:
+  other: First
+paige_history:
+  other: History
+paige_home:
+  other: Home
+paige_javascript_is_required:
+  other: JavaScript is required
+paige_last:
+  other: Last
+paige_menu:
+  other: Menu
+paige_minutes:
+  one: minute
+  other: minutes
+paige_next:
+  other: Next
+paige_nothing_found:
+  other: Nothing found
+paige_page_list_navigation:
+  other: Page list navigation
+paige_pages:
+  other: Pages
+paige_previous:
+  other: Previous
+paige_query:
+  other: Query
+paige_search:
+  other: Search
+paige_searching:
+  other: Searching
+paige_sections:
+  other: Sections
+paige_something_found:
+  other: Something found
+paige_words:
+  one: word
+  other: words

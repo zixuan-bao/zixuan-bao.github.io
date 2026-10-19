@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Brotkrumen
+paige_collections:
+  other: Sammlungen
+paige_edit:
+  other: Bearbeiten
+paige_error:
+  other: Fehler
+paige_figure:
+  other: Abbildung
+paige_first:
+  other: Erste
+paige_history:
+  other: Verlauf
+paige_home:
+  other: Startseite
+paige_javascript_is_required:
+  other: JavaScript ist erforderlich
+paige_last:
+  other: Letzte
+paige_menu:
+  other: Menü
+paige_minutes:
+  one: Minute
+  other: Minuten
+paige_next:
+  other: Weiter
+paige_nothing_found:
+  other: Nichts gefunden
+paige_page_list_navigation:
+  other: Seitenlisten-Navigation
+paige_pages:
+  other: Seiten
+paige_previous:
+  other: Zurück
+paige_query:
+  other: Anfrage
+paige_search:
+  other: Suche
+paige_searching:
+  other: Suche läuft
+paige_sections:
+  other: Abschnitte
+paige_something_found:
+  other: Etwas gefunden
+paige_words:
+  one: Wort
+  other: Wörter

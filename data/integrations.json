@@ -1,0 +1,16 @@
+{
+  "giscus": {
+    "enabled": false,
+    "repo": "",
+    "repo_id": "",
+    "category": "",
+    "category_id": ""
+  },
+  "analytics": {
+    "enabled": false,
+    "provider": "",
+    "domain": "",
+    "script_url": ""
+  },
+  "newsletter_url": ""
+}

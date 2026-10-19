@@ -1,0 +1,292 @@
+{{ $params := . }}
+
+{{ $alt := $params.alt }}
+{{ $breakpoints := $params.breakpoints }}
+{{ $class := $params.class }}
+{{ $densities := $params.densities }}
+{{ $fetchPriority := $params.fetchpriority }}
+{{ $height := $params.height }}
+{{ $intrinsicHeight := "" }}
+{{ $intrinsicWidth := "" }}
+{{ $link := $params.link }}
+{{ $linked := $params.linked }}
+{{ $loading := $params.loading }}
+{{ $maxHeight := $params.maxheight }}
+{{ $maxWidth := $params.maxwidth }}
+{{ $page := $params.page }}
+{{ $process := $params.process }}
+{{ $resource := $params.resource }}
+{{ $sizes := $params.sizes }}
+{{ $src := $params.src }}
+{{ $srcset := $params.srcset }}
+{{ $style := $params.style }}
+{{ $title := $params.title }}
+{{ $width := $params.width }}
+
+{{ if and (or $height $maxHeight) (not (or $maxWidth $width)) }}
+    {{ $width = "auto" }}
+{{ end }}
+
+{{ if and (or $maxWidth $width) (not (or $height $maxHeight)) }}
+    {{ $height = "auto" }}
+{{ end }}
+
+{{ if $style }}
+    {{ $mapped := slice }}
+
+    {{ range split $style ";" }}
+        {{ $s := . | strings.TrimLeft " " | strings.TrimRight " " }}
+
+        {{ if not $s }}
+            {{ continue }}
+        {{ end }}
+
+        {{ $mapped = $mapped | append $s }}
+    {{ end }}
+
+    {{ $style = $mapped }}
+{{ else }}
+    {{ $style = slice }}
+{{ end }}
+
+{{ if $height }}
+    {{ $style = $style | append (print "height: " $height) }}
+{{ end }}
+
+{{ if $maxHeight }}
+    {{ $style = $style | append (print "max-height: " $maxHeight) }}
+{{ end }}
+
+{{ if $maxWidth }}
+    {{ $style = $style | append (print "max-width: " $maxWidth) }}
+{{ end }}
+
+{{ if $width }}
+    {{ $style = $style | append (print "width: " $width) }}
+{{ end }}
+
+{{ $style = delimit ($style | uniq | sort) "; " }}
+
+{{ if and (not $resource) $src }}
+    {{ $resource = partial "paige/func-resource.html" (dict "page" $page "url" $src) }}
+{{ end }}
+
+{{ $raster := ne $resource.MediaType.SubType "svg" }}
+
+{{ if and $resource $raster }}
+    {{ $method := "" }}
+    {{ $options := slice }}
+    {{ $quality := "" }}
+    {{ $size := "" }}
+    {{ $smallerResource := $resource }}
+
+    {{ if $process }}
+        {{ range split (lower (cond (eq $process "default") "" $process)) " " }}
+            {{ if or (eq . "crop") (eq . "fill") (eq . "fit") (eq . "resize") }}
+                {{ $method = . }}
+            {{ else }}
+                {{ with findRE `q\d+` . 1 }}
+                    {{ $quality = index . 0 }}
+                {{ else with findRE `\d+x\d+|\d+x|x\d+` . 1 }}
+                    {{ $size = index . 0 }}
+                {{ else }}
+                    {{ $options = $options | append . }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+
+        {{ $options = delimit $options " " }}
+
+        {{ if not $method }}
+            {{ $method = "resize" }}
+        {{ end }}
+
+        {{ if not $size }}
+            {{ $size = print $resource.Width "x" $resource.Height }}
+        {{ end }}
+
+        {{ $smallerOptions := print $size " " $quality " " $options }}
+
+        {{ if eq $method "crop" }}
+            {{ $smallerResource = $resource.Crop $smallerOptions }}
+        {{ else if eq $method "fill" }}
+            {{ $smallerResource = $resource.Fill $smallerOptions }}
+        {{ else if eq $method "fit" }}
+            {{ $smallerResource = $resource.Fit $smallerOptions }}
+        {{ else if eq $method "resize" }}
+            {{ $smallerResource = $resource.Resize $smallerOptions }}
+        {{ end }}
+    {{ end }}
+
+    {{ $smallerResource = resources.Copy (print $page.Path "/" (sha256 $smallerResource.Content) "." $smallerResource.MediaType.FirstSuffix.Suffix) $smallerResource }}
+    {{ $intrinsicHeight = $smallerResource.Height }}
+    {{ $intrinsicWidth = $smallerResource.Width }}
+    {{ $src = $smallerResource.RelPermalink }}
+
+    {{ if and (not $sizes) (not $srcset) }}
+        {{ $partialResource := "" }}
+
+        {{ if and $method (or $breakpoints $densities) (ne $method "resize") }}
+            {{ $partialOptions := print $size " q100 " $options }}
+
+            {{ if eq $method "crop" }}
+                {{ $partialResource = $resource.Crop $partialOptions }}
+            {{ else if eq $method "fill" }}
+                {{ $partialResource = $resource.Fill $partialOptions }}
+            {{ else if eq $method "fit" }}
+                {{ $partialResource = $resource.Fit $partialOptions }}
+            {{ end }}
+        {{ end }}
+
+        {{ if $densities }}
+            {{ $densities = split $densities " " }}
+            {{ $srcset = slice }}
+
+            {{ $parsedDensities := slice }}
+
+            {{ range $densities }}
+                {{ with findRE `^(\d+(\.\d+)?x|\.\d+x)$` . 1 }}
+                    {{ $parsedDensities = $parsedDensities | append (strings.TrimSuffix "x" (index . 0) | float) }}
+                {{ else }}
+                    {{ errorf "layouts/_partials/paige/image.html: invalid pixel density: %q" . }}
+                {{ end }}
+            {{ end }}
+
+            {{ $parsedDensities = $parsedDensities | uniq | sort }}
+
+            {{ if lt (len $parsedDensities) 2 }}
+                {{ errorf "layouts/_partials/paige/image.html: must have at least two unique pixel densities" }}
+            {{ end }}
+
+            {{ $base := 0 }}
+            {{ $maxDensity := index $parsedDensities (sub (len $parsedDensities) 1) }}
+
+            {{ with $partialResource }}
+                {{ $base = div .Width $maxDensity }}
+            {{ else }}
+                {{ $base = div $smallerResource.Width $maxDensity }}
+            {{ end }}
+
+            {{ range $parsedDensities }}
+                {{ if eq . $maxDensity }}
+                    {{ continue }}
+                {{ end }}
+
+                {{ $imageWidth := mul $base . | math.Round | int }}
+                {{ $resized := "" }}
+
+                {{ with $partialResource }}
+                    {{ $resized = .Resize (print $imageWidth "x " $quality " " $options) }}
+                {{ else }}
+                    {{ $resized = $smallerResource.Resize (print $imageWidth "x q100 " $options) }}
+                {{ end }}
+
+                {{ $resized = resources.Copy (print $page.Path "/" (sha256 $resized.Content) "." $resized.MediaType.FirstSuffix.Suffix) $resized }}
+                {{ $srcset = $srcset | append (printf "%s %gx" $resized.RelPermalink .) }}
+            {{ end }}
+
+            {{ $srcset = $srcset | append (printf "%s %gx" $smallerResource.RelPermalink $maxDensity) }}
+            {{ $srcset = delimit $srcset ", " | string }}
+        {{ else if $breakpoints }}
+            {{ $sizes = slice }}
+            {{ $srcset = slice }}
+
+            {{ $maxWidth := 0 }}
+
+            {{ range slice (slice 550 576) (slice 696 768) (slice 936 992) (slice 1116 1200) (slice 1296 1400) }}
+                {{ $imageWidth := index . 0 }}
+                {{ $viewWidth := index . 1 }}
+
+                {{ if gt $imageWidth $smallerResource.Width }}
+                    {{ continue }}
+                {{ end }}
+
+                {{ $resized := "" }}
+
+                {{ with $partialResource }}
+                    {{ $resized = .Resize (print $imageWidth "x " $quality " " $options) }}
+                {{ else }}
+                    {{ $resized = $smallerResource.Resize (print $imageWidth "x q100 " $options) }}
+                {{ end }}
+
+                {{ $resized = resources.Copy (print $page.Path "/" (sha256 $resized.Content) "." $resized.MediaType.FirstSuffix.Suffix) $resized }}
+                {{ $maxWidth = math.Max $maxWidth $imageWidth }}
+                {{ $sizes = $sizes | append (printf "(max-width: %dpx) %dpx" $viewWidth $imageWidth) }}
+                {{ $srcset = $srcset | append (printf "%s %dw" $resized.RelPermalink $imageWidth) }}
+            {{ end }}
+
+            {{ if $sizes }}
+                {{ $sizes = $sizes | append (print $maxWidth "px") }}
+                {{ $sizes = delimit $sizes ", " }}
+                {{ $srcset = delimit $srcset ", " }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ else if $resource }}
+    {{ $src = $resource.RelPermalink }}
+{{ else }}
+    {{ $src = relLangURL $src }}
+{{ end }}
+
+{{ $content := partial "paige/tag-img.html" (dict
+    "alt" $alt
+    "class" $class
+    "fetchpriority" $fetchPriority
+    "height" $intrinsicHeight
+    "loading" $loading
+    "sizes" $sizes
+    "src" $src
+    "srcset" $srcset
+    "style" $style
+    "title" $title
+    "width" $intrinsicWidth
+) }}
+
+{{ if $linked }}
+    {{ if ne $linked true }}
+        {{ $method := "" }}
+        {{ $options := slice }}
+        {{ $size := "" }}
+
+        {{ range split (lower (cond (eq $linked "default") "" $linked)) " " }}
+            {{ if or (eq . "crop") (eq . "fill") (eq . "fit") (eq . "resize") }}
+                {{ $method = . }}
+            {{ else }}
+                {{ with findRE `\d+x\d+|\d+x|x\d+` . 1 }}
+                    {{ $size = index . 0 }}
+                {{ else }}
+                    {{ $options = $options | append . }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+
+        {{ $options = delimit $options " " }}
+
+        {{ if not $method }}
+            {{ $method = "resize" }}
+        {{ end }}
+
+        {{ if not $size }}
+            {{ $size = print $resource.Width "x" $resource.Height }}
+        {{ end }}
+
+        {{ $options = print $size " " $options }}
+
+        {{ if eq $method "crop" }}
+            {{ $resource = $resource.Crop $options }}
+        {{ else if eq $method "fill" }}
+            {{ $resource = $resource.Fill $options }}
+        {{ else if eq $method "fit" }}
+            {{ $resource = $resource.Fit $options }}
+        {{ else if eq $method "resize" }}
+            {{ $resource = $resource.Resize $options }}
+        {{ end }}
+    {{ end }}
+
+    {{ $resource = resources.Copy (print $page.Path "/" (sha256 $resource.Content) "." $resource.MediaType.FirstSuffix.Suffix) $resource }}
+    {{ $content = partial "paige/tag-a.html" (dict "content" $content "href" $resource.RelPermalink "page" $page) }}
+{{ else if $link }}
+    {{ $content = partial "paige/tag-a.html" (dict "content" $content "href" $link "page" $page) }}
+{{ end }}
+
+{{ $content }}

@@ -1,0 +1,239 @@
+{{ $page := . }}
+
+{{ $auto := $page.Param "paige.pages.disable_auto_schema" | not }}
+{{ $pageBase := $page.Param "paige.pages.base_schema" }}
+{{ $siteBase := $page.Param "paige.site.base_schema" }}
+
+{{ range $page.Param "paige.site.schemas" }}
+    <script type="application/ld+json">{{ merge $siteBase . | jsonify | safeJS }}</script>
+{{ end }}
+
+{{ range $page.Param "paige.pages.schemas" }}
+    <script type="application/ld+json">{{ merge $pageBase . | jsonify | safeJS }}</script>
+{{ end }}
+
+{{ if $auto }}
+    {{ $audio := $page.Params.audio | default slice }}
+    {{ $authors := partial "paige/func-authors.html" $page }}
+    {{ $copyright := site.Copyright | markdownify | plainify | htmlUnescape }}
+    {{ $created := $page.Date }}
+    {{ $description := $page.Description | markdownify | plainify | htmlUnescape }}
+    {{ $expires := cond (not $page.ExpiryDate.IsZero) $page.ExpiryDate false }}
+    {{ $images := $page.Params.images | default slice }}
+    {{ $keywords := partial "paige/func-keywords.html" $page }}
+    {{ $language := site.Language.Locale }}
+    {{ $license := $page.Param "paige.site.license" | markdownify | plainify | htmlUnescape }}
+    {{ $modified := cond (not $page.Lastmod.IsZero) $page.Lastmod false }}
+    {{ $published := cond (and (not $page.PublishDate.IsZero) (ne $page.Date $page.PublishDate)) $page.PublishDate false }}
+    {{ $schema := newScratch }}
+    {{ $section := $page.CurrentSection.Title | markdownify | plainify | htmlUnescape }}
+    {{ $summary := $page.Summary | markdownify | plainify | htmlUnescape | chomp }}
+    {{ $time := printf "PT%dM" $page.ReadingTime }}
+    {{ $title := $page.Title | markdownify | plainify | htmlUnescape }}
+    {{ $videos := $page.Params.videos | default slice }}
+    {{ $words := $page.WordCount }}
+
+    {{ $schema.Set "@context" "https://schema.org" }}
+    {{ $schema.Set "@type" "Article" }}
+    {{ $schema.Set "url" $page.Permalink }}
+
+    {{ with $summary }}
+        {{ $schema.Set "abstract" . }}
+    {{ end }}
+
+    {{ with $description }}
+        {{ $schema.Set "alternativeHeadline" . }}
+    {{ end }}
+
+    {{ with $section }}
+        {{ $schema.Set "articleSection" . }}
+    {{ end }}
+
+    {{ with $audio }}
+        {{ $objects := slice }}
+
+        {{ range $audio }}
+            {{ $objects = $objects | append (dict "@type" "AudioObject" "url" .) }}
+        {{ end }}
+
+        {{ $schema.Set "audio" $objects }}
+    {{ end }}
+
+    {{ with $authors }}
+        {{ $objects := slice }}
+
+        {{ range $authors }}
+            {{ $email := .Params.paige.author.email }}
+            {{ $name := .Params.paige.author.name | default (.Title | markdownify | plainify | htmlUnescape) }}
+            {{ $url := .Params.paige.author.url }}
+
+            {{ if or $email $name $url }}
+                {{ $object := newScratch }}
+
+                {{ with $email }}
+                    {{ $object.Set "email" . }}
+                {{ end }}
+
+                {{ with $name }}
+                    {{ $object.Set "name" . }}
+                {{ end }}
+
+                {{ with $url }}
+                    {{ $object.Set "url" . }}
+                {{ end }}
+
+                {{ $object.Set "@type" "Person" }}
+                {{ $objects = $objects | append $object.Values }}
+            {{ end }}
+        {{ end }}
+
+        {{ $schema.Set "author" $objects }}
+    {{ end }}
+
+    {{ with $copyright }}
+        {{ $schema.Set "copyrightNotice" . }}
+    {{ end }}
+
+    {{ with $created }}
+        {{ $schema.Set "dateCreated" . }}
+    {{ end }}
+
+    {{ with $modified }}
+        {{ $schema.Set "dateModified" . }}
+    {{ end }}
+
+    {{ with $published }}
+        {{ $schema.Set "datePublished" . }}
+    {{ end }}
+
+    {{ with $description }}
+        {{ $schema.Set "description" . }}
+    {{ end }}
+
+    {{ with $expires }}
+        {{ $schema.Set "expiresAt" . }}
+    {{ end }}
+
+    {{ with $title }}
+        {{ $schema.Set "headline" . }}
+    {{ end }}
+
+    {{ with $images }}
+        {{ $originals := slice }}
+        {{ $resizes := slice }}
+
+        {{ range $images }}
+            {{ $resource := partial "paige/func-resource.html" (dict "page" $page "url" .) }}
+
+            {{ $full := $resource.Process "webp" }}
+
+            {{ $originals = $originals | append (dict
+                "@type" "ImageObject"
+                "height" $full.Height
+                "url" $full.RelPermalink
+                "width" $full.Width
+            ) }}
+
+            {{ $ratio := div (float $resource.Width) (float $resource.Height) }}
+
+            {{ if ne $ratio 1.0 }}
+                {{ $min := int (math.Min $resource.Width $resource.Height) }}
+                {{ $spec1x1 := printf "%dx%d webp" $min $min }}
+                {{ $resource1x1 := $resource.Fill $spec1x1 }}
+
+                {{ $resizes = $resizes | append (dict
+                    "@type" "ImageObject"
+                    "height" $resource1x1.Height
+                    "url" $resource1x1.RelPermalink
+                    "width" $resource1x1.Width
+                ) }}
+            {{ end }}
+
+            {{ if ne $ratio (div 4.0 3.0) }}
+                {{ $spec4x3 := printf "%dx%d" }}
+
+                {{ if gt $resource.Width $resource.Height }}
+                    {{ $width := int (mul (div (float $resource.Height) 3.0) 4.0) }}
+
+                    {{ $spec4x3 = printf "%dx%d webp" $width $resource.Height }}
+                {{ else }}
+                    {{ $height := int (mul (div (float $resource.Width) 4.0) 3.0) }}
+
+                    {{ $spec4x3 = printf "%dx%d webp" $resource.Width $height }}
+                {{ end }}
+
+                {{ $resource4x3 := $resource.Fill $spec4x3 }}
+
+                {{ $resizes = $resizes | append (dict
+                    "@type" "ImageObject"
+                    "height" $resource4x3.Height
+                    "url" $resource4x3.RelPermalink
+                    "width" $resource4x3.Width
+                ) }}
+            {{ end }}
+
+            {{ if ne $ratio (div 16.0 9.0) }}
+                {{ $spec16x9 := printf "%dx%d" }}
+
+                {{ if gt $resource.Width $resource.Height }}
+                    {{ $width := int (mul (div (float $resource.Height) 9.0) 16.0) }}
+
+                    {{ $spec16x9 = printf "%dx%d webp" $width $resource.Height }}
+                {{ else }}
+                    {{ $height := int (mul (div (float $resource.Width) 4.0) 3.0) }}
+
+                    {{ $spec16x9 = printf "%dx%d webp" $resource.Width $height }}
+                {{ end }}
+
+                {{ $resource16x9 := $resource.Fill $spec16x9 }}
+
+                {{ $resizes = $resizes | append (dict
+                    "@type" "ImageObject"
+                    "height" $resource16x9.Height
+                    "url" $resource16x9.RelPermalink
+                    "width" $resource16x9.Width
+                ) }}
+            {{ end }}
+        {{ end }}
+
+        {{ $objects := append $resizes $originals }}
+
+        {{ $schema.Set "image" $objects }}
+    {{ end }}
+
+    {{ with $language }}
+        {{ $schema.Set "inLanguage" . }}
+    {{ end }}
+
+    {{ with $keywords }}
+        {{ $schema.Set "keywords" . }}
+    {{ end }}
+
+    {{ with $license }}
+        {{ $schema.Set "license" . }}
+    {{ end }}
+
+    {{ with $title }}
+        {{ $schema.Set "name" . }}
+    {{ end }}
+
+    {{ with $time }}
+        {{ $schema.Set "timeRequired" . }}
+    {{ end }}
+
+    {{ with $videos }}
+        {{ $objects := slice }}
+
+        {{ range $videos }}
+            {{ $objects = $objects | append (dict "@type" "VideoObject" "url" .) }}
+        {{ end }}
+
+        {{ $schema.Set "video" $objects }}
+    {{ end }}
+
+    {{ with $words }}
+        {{ $schema.Set "wordCount" . }}
+    {{ end }}
+
+    <script type="application/ld+json">{{ merge $pageBase $schema.Values | jsonify | safeJS }}</script>
+{{ end }}

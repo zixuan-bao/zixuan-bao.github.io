@@ -1,0 +1,14 @@
+{{ $content := chomp .InnerDeindent | markdownify }}
+{{ $tabs := .Page.Scratch.Get "paige-tabs" | default 0 }}
+
+{{ if not $content }}
+    {{ errorf "layouts/_shortcodes/paige/tab/pane.html: no content" }}
+{{ end }}
+
+{{ .Page.Scratch.Add "paige-tabs-pane" 1 }}
+
+{{ $panes := .Page.Scratch.Get "paige-tabs-pane" }}
+
+{{ $active := eq $panes 1 }}
+
+<div aria-labelledby="paige-tabs-{{ $tabs }}-button-{{ $panes }}" class="{{ if $active }} active {{ end }} fade {{ if $active }} show {{ end }} tab-pane" id="paige-tabs-{{ $tabs }}-pane-{{ $panes }}" role="tabpanel" tabindex="0">{{ $content }}</div>

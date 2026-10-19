@@ -1,0 +1,27 @@
+{{ define "main" }}
+<main id="main" tabindex="-1" class="inner-page">
+{{ partial "breadcrumbs.html" . }}
+{{ if eq .Layout "search" }}
+  <header class="page-heading"><p class="eyebrow">Find something</p><h1>Search<span class="blue-dot">.</span></h1><p>Search titles, descriptions, topics, and collaborators across the collection.</p></header>
+  <form class="search-form" action="{{ .RelPermalink }}" method="get" data-index="{{ "search.json" | relURL }}"><label class="visually-hidden" for="site-query">Search the website</label>{{ partial "icon.html" "search" }}<input id="site-query" name="q" type="search" placeholder="Try research, cities, or a topic…" autocomplete="off"><button type="submit">Search</button></form><p class="search-status" role="status" aria-live="polite">Type a word or phrase to explore the collection.</p><div class="search-results"></div><noscript><p>Search requires JavaScript. You can browse all entries in the <a href="{{ "archive/" | relURL }}">archive</a>.</p></noscript>
+{{ else if eq .Layout "archive" }}
+  <header class="page-heading"><p class="eyebrow">Looking back</p><h1>Archive<span class="blue-dot">.</span></h1><p>All dated entries, organized by year.</p></header>
+  {{ $dated := where site.RegularPages "Params.date" "ne" nil }}{{ range $dated.GroupByDate "2006" }}<section class="archive-year"><h2>{{ .Key }}</h2>{{ range .Pages.ByDate.Reverse }}<div class="archive-item"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 02" }}</time><a href="{{ .RelPermalink }}">{{ .Title }}</a><span>{{ .CurrentSection.Title }}</span></div>{{ end }}</section>{{ end }}
+{{ else if eq .Section "gallery" }}
+  <header class="page-heading"><p class="eyebrow">{{ .Params.country }} / {{ len .Params.photos }} {{ if eq (len .Params.photos) 1 }}photograph{{ else }}photographs{{ end }}</p><h1>{{ .Title }}<span class="blue-dot">.</span></h1><p>{{ .Description }}</p></header>
+  {{ with .Content }}<div class="prose city-introduction">{{ . }}</div>{{ end }}
+  <div class="photo-grid">{{ range .Params.photos }}<figure><button class="photo-open" type="button" data-photo-src="{{ .src | relURL }}" data-photo-caption="{{ .caption }} · {{ .location }} · {{ .date }}"><img src="{{ .src | relURL }}" alt="{{ .alt }}" loading="lazy" width="1200" height="900"><span>View photograph {{ partial "icon.html" "external" }}</span></button><figcaption><div><strong>{{ .title }}</strong><time>{{ .date }}</time></div><span>{{ .location }}</span><p>{{ .caption }}</p></figcaption><noscript><a href="{{ .src | relURL }}">Open photograph</a></noscript></figure>{{ end }}</div>
+{{ else }}
+  <article class="entry-page"><header class="page-heading"><p class="eyebrow">{{ .Parent.Title }}{{ with .Params.status }} / {{ . }}{{ end }}</p><h1>{{ .Title }}</h1><p>{{ .Description }}</p><div class="entry-meta">{{ with .Params.authors }}<span>{{ delimit . ", " }}</span>{{ end }}{{ if not .Date.IsZero }}<span>Published <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></span>{{ end }}{{ if gt .Lastmod .Date }}<span>Updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "January 2, 2006" }}</time></span>{{ end }}</div></header>
+  {{ with .Params.image }}<img class="entry-cover" src="{{ . | relURL }}" alt="{{ $.Params.image_alt }}" width="1200" height="650">{{ end }}
+  <div class="prose">{{ .Content }}</div>
+  {{ with .Params.link }}<div class="external-destination"><div><p class="eyebrow">Continue reading</p><p>The full document is hosted externally.</p></div><a class="button-primary" href="{{ . | relURL }}" {{ if hasPrefix . "https://" }}target="_blank" rel="noopener noreferrer"{{ end }}>{{ $.Params.link_label | default "Open document" }} {{ partial "icon.html" "external" }}</a></div>{{ else }}{{ if eq .Params.status "In progress" }}<div class="editor-note"><strong>Work in progress</strong><p>A manuscript link will appear here when one is available.</p></div>{{ end }}{{ end }}
+  {{ with .Params.attachments }}<div class="attachment-list">{{ range . }}<a href="{{ .url | relURL }}" target="_blank" rel="noopener noreferrer">{{ .label }} {{ partial "icon.html" "external" }}</a>{{ end }}</div>{{ end }}
+  {{ with .GetTerms "tags" }}<div class="tag-list">{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}</div>{{ end }}
+  {{ with .GetTerms "series" }}<div class="series-links">Part of {{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}</div>{{ end }}
+  <nav class="entry-pagination" aria-label="Other entries">{{ with .PrevInSection }}<a href="{{ .RelPermalink }}"><span>Previous entry</span>{{ .Title }} ←</a>{{ end }}{{ with .NextInSection }}<a href="{{ .RelPermalink }}"><span>Next entry</span>{{ .Title }} →</a>{{ end }}</nav>
+  {{ partial "comments.html" . }}
+  </article>
+{{ end }}
+</main>
+{{ end }}

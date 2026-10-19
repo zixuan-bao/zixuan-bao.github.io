@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: ব্রেডক্রাম্বস
+paige_collections:
+  other: সংগ্রহ
+paige_edit:
+  other: সম্পাদনা
+paige_error:
+  other: ত্রুটি
+paige_figure:
+  other: চিত্র
+paige_first:
+  other: প্রথম
+paige_history:
+  other: ইতিহাস
+paige_home:
+  other: হোম
+paige_javascript_is_required:
+  other: জাভাস্ক্রিপ্ট প্রয়োজন
+paige_last:
+  other: শেষ
+paige_menu:
+  other: মেনু
+paige_minutes:
+  one: মিনিট
+  other: মিনিট
+paige_next:
+  other: পরবর্তী
+paige_nothing_found:
+  other: কিছুই পাওয়া যায়নি
+paige_page_list_navigation:
+  other: পৃষ্ঠা তালিকা নেভিগেশন
+paige_pages:
+  other: পৃষ্ঠাসমূহ
+paige_previous:
+  other: পূর্ববর্তী
+paige_query:
+  other: অনুসন্ধান
+paige_search:
+  other: অনুসন্ধান করুন
+paige_searching:
+  other: অনুসন্ধান চলছে...
+paige_sections:
+  other: বিভাগ
+paige_something_found:
+  other: কিছু পাওয়া গেছে
+paige_words:
+  one: শব্দ
+  other: শব্দগুলি

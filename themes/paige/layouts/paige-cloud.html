@@ -1,0 +1,17 @@
+{{ define "main" }}
+{{ $page := . }}
+
+{{ partial "paige/page.html" $page }}
+
+{{ with $page.Pages }}
+    <div id="paige-page-pages">
+        <ul class="list-inline text-center">
+            {{ range (sort . "LinkTitle") }}
+                <li class="list-inline-item">
+                    <a href="{{ .RelPermalink }}">{{ .LinkTitle | markdownify | plainify | htmlUnescape }}</a>
+                </li>
+            {{ end }}
+        </ul>
+    </div>
+{{ end }}
+{{ end }}

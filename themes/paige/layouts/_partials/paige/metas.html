@@ -1,0 +1,34 @@
+{{ $page := . }}
+
+{{ $author := slice }}
+{{ $authors := partial "paige/func-authors.html" $page }}
+{{ $color := $page.Param `paige.site.color` | default `#0d6efd` }}
+{{ $description := cond $page.IsHome ($page.Description | default ($page.Param "paige.site.description")) $page.Description | markdownify | plainify | htmlUnescape }}
+{{ $keywords := partial "paige/func-keywords.html" $page }}
+
+{{ range $authors }}
+    {{ $author = $author | append (.Params.paige.author.name | default (.Title | markdownify | plainify | htmlUnescape)) }}
+{{ end }}
+
+{{ $author = delimit $author ", " }}
+
+<meta charset="utf-8">
+<meta content="{{ site.Title | markdownify | plainify | htmlUnescape }}" name="apple-mobile-web-app-title">
+
+{{ with $author }}
+    <meta content="{{ . }}" name="author">
+{{ end }}
+
+{{ with $description }}
+    <meta content="{{ . }}" name="description">
+{{ end }}
+
+{{ with $keywords }}
+    <meta content="{{ . }}" name="keywords">
+{{ end }}
+
+<meta content="{{ $color }}" name="theme-color">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+
+{{ partial "opengraph.html" $page }}
+{{ partial "twitter_cards.html" $page }}

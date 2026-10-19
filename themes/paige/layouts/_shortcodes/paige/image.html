@@ -1,0 +1,42 @@
+{{ $alt := .Get "alt" }}
+{{ $breakpoints := .Get "breakpoints" }}
+{{ $class := .Get "class" }}
+{{ $densities := .Get "densities" }}
+{{ $height := .Get "height" }}
+{{ $link := .Get "link" }}
+{{ $linked := .Get "linked" }}
+{{ $loading := .Get "loading" }}
+{{ $maxHeight := .Get "maxheight" }}
+{{ $maxWidth := .Get "maxwidth" }}
+{{ $priority := .Get "fetchpriority" }}
+{{ $process := .Get "process" }}
+{{ $sizes := .Get "sizes" }}
+{{ $src := .Get 0 | default (.Get "src") }}
+{{ $srcset := .Get "srcset" }}
+{{ $style := .Get "style" }}
+{{ $title := .Get "title" }}
+{{ $width := .Get "width" }}
+
+<div class="paige-shortcode-image">
+    {{ partial "paige/image.html" (dict
+        "alt" $alt
+        "breakpoints" $breakpoints
+        "class" (printf "img-fluid %s" $class)
+        "densities" $densities
+        "fetchpriority" $priority
+        "height" $height
+        "link" $link
+        "linked" $linked
+        "loading" $loading
+        "maxheight" $maxHeight
+        "maxwidth" $maxWidth
+        "page" .Page
+        "process" $process
+        "sizes" $sizes
+        "src" $src
+        "srcset" $srcset
+        "style" $style
+        "title" $title
+        "width" $width
+    ) }}
+</div>

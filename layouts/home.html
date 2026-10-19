@@ -1,0 +1,46 @@
+{{ define "main" }}
+{{ $home := hugo.Data.home }}
+{{ $sections := where site.Sections.ByWeight "Section" "in" (slice "about" "research" "notes" "thoughts" "writings" "gallery" "resources") }}
+{{ $sections = where $sections "Params.show_home" "ne" false }}
+<main id="main" tabindex="-1">
+  <section class="home-hero" aria-labelledby="welcome-title">
+    <div class="hero-photo">
+      <img src="{{ $home.hero_image | relURL }}" alt="{{ $home.hero_alt }}" width="2400" height="1500" fetchpriority="high">
+      <div class="hero-photo-shade"></div>
+      {{ with $home.hero_caption }}<span class="photo-label">{{ . }}</span>{{ end }}
+    </div>
+    <div class="hero-intro">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="blue-dot">●</span> {{ $home.eyebrow }}</p>
+        <h1 id="welcome-title">{{ $home.heading_first }}{{ with $home.heading_second }}<br>{{ . }}{{ end }}<span class="blue-dot">.</span></h1>
+        <p class="hero-description">{{ hugo.Data.profile.intro }}</p>
+        <div class="hero-links">
+          <a class="primary-link" href="{{ "about/" | relURL }}">{{ $home.primary_label }} {{ partial "icon.html" "arrow" }}</a>
+          {{ range hugo.Data.profile.socials }}<a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }} {{ partial "icon.html" "external" }}</a>{{ end }}
+        </div>
+      </div>
+      <a class="hero-avatar" href="{{ site.Home.RelPermalink }}" aria-label="Return home"><img src="{{ hugo.Data.profile.avatar | relURL }}" width="112" height="112" alt="{{ hugo.Data.profile.display_name }}'s avatar"></a>
+    </div>
+    {{ with $sections }}<a class="scroll-cue" href="#{{ (index . 0).Section }}-preview">{{ $home.scroll_label }} <span>↓</span></a>{{ end }}
+  </section>
+  {{ range $index, $page := $sections }}
+  {{ $count := int (.Params.preview_count | default (cond (eq .Section "research") 2 3)) }}
+  <section class="home-section {{ if eq .Section "about" }}about-preview{{ end }}" id="{{ .Section }}-preview">
+    {{ partial "section-heading.html" (dict "page" . "number" (printf "%02d" (add $index 1))) }}
+    {{ if eq .Section "about" }}
+      <div class="about-preview-grid"><p class="about-lead">{{ hugo.Data.profile.about_preview }}</p><div class="about-facts">
+        {{ if or hugo.Data.profile.program hugo.Data.profile.school }}<div><span>Currently</span><p>{{ hugo.Data.profile.program }}<br><span class="muted">{{ hugo.Data.profile.school }}</span></p></div>{{ end }}
+        <div><span>Elsewhere</span><p>{{ range hugo.Data.profile.socials }}<a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }} ↗</a>{{ end }}</p></div>
+      </div></div>
+    {{ else if eq .Section "gallery" }}
+      <p class="section-intro">{{ .Description }}</p><div class="city-grid">{{ range first $count .RegularPages.ByWeight }}{{ partial "city-card.html" . }}{{ end }}</div>
+    {{ else if eq .Section "resources" }}
+      <p class="section-intro">{{ .Description }}</p><div class="resource-preview">{{ range first $count .Sections.ByWeight }}<div class="resource-group"><span class="eyebrow">{{ .Title }}</span>{{ range first 2 .RegularPages.ByWeight }}{{ if .Params.link }}<a href="{{ .Params.link | relURL }}" target="_blank" rel="noopener noreferrer">{{ .Title }} {{ partial "icon.html" "external" }}</a>{{ else }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}<p>{{ .Description }}</p>{{ end }}</div>{{ end }}</div>
+    {{ else }}
+      <p class="section-intro">{{ .Description }}</p><div class="{{ if eq .Section "research" }}research-list{{ else }}preview-list{{ end }}">{{ range first $count .RegularPagesRecursive.ByWeight }}{{ partial "entry.html" (dict "page" .) }}{{ end }}</div>
+    {{ end }}
+  </section>
+  {{ end }}
+  <section class="closing-note"><p>{{ $home.closing_title }}</p><span>{{ $home.closing_text }}</span><a href="{{ "rss.xml" | relURL }}">Follow along via RSS {{ partial "icon.html" "rss" }}</a>{{ with hugo.Data.integrations.newsletter_url }}<a href="{{ . }}" target="_blank" rel="noopener noreferrer">Subscribe by email ↗</a>{{ end }}</section>
+</main>
+{{ end }}

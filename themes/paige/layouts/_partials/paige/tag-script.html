@@ -1,0 +1,25 @@
+{{ $params := . }}
+
+{{ $defer := $params.defer | default "defer" }}
+{{ $integrity := $params.integrity }}
+{{ $onload := $params.onload | safeJS }}
+{{ $origin := $params.crossorigin | default "anonymous" }}
+{{ $page := $params.page }}
+{{ $policy := $params.referrerpolicy | default "no-referrer" }}
+{{ $src := $params.src }}
+{{ $type := $params.type }}
+
+{{ if not $src }}
+    {{ errorf "layouts/_partials/paige/tag-script.html: no src" }}
+{{ end }}
+
+{{ with partial "paige/func-resource.html" (dict "page" $page "url" $src) }}
+    {{ $resource := . | minify | fingerprint }}
+
+    {{ $integrity = $resource.Data.Integrity }}
+    {{ $src = $resource.RelPermalink }}
+{{ else }}
+    {{ $src = relLangURL $src }}
+{{ end }}
+
+<script {{ with $origin }} crossorigin="{{ . }}" {{ end }} {{ with $defer }} defer {{ end }} integrity="{{ $integrity }}" {{ with $onload }} onload="{{ . }}" {{ end }} {{ with $policy }} referrerpolicy="{{ . }}" {{ end }} src="{{ $src }}" {{ with $type }} {{ printf `type="%v"` . | safeHTMLAttr }} {{ end }}></script>

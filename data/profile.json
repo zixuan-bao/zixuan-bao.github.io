@@ -1,0 +1,18 @@
+{
+  "display_name": "Zixuan Bao",
+  "full_name": "Zixuan Bao",
+  "avatar": "/images/avatar.png",
+  "school": "",
+  "program": "",
+  "email": "",
+  "intro": "A home for research, ideas, and the things I want to remember.",
+  "about_preview": "There is room here for work in progress, notes from learning, and things encountered along the way.",
+  "socials": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/zixuanb3",
+      "icon": "github"
+    }
+  ],
+  "show_demo_notice": true
+}

@@ -1,0 +1,64 @@
+{{ $page := . }}
+
+{{ $class := slice }}
+{{ $content := $page.Content }}
+{{ $draft := $page.Draft }}
+{{ $expired := and $page.ExpiryDate (lt $page.ExpiryDate now) }}
+{{ $future := and $page.PublishDate (gt $page.PublishDate now) }}
+{{ $microdata := $page.Params.paige.pages.microdata }}
+{{ $min := $page.Param `paige.pages.full_width` | not }}
+{{ $modified := and $page.PublishDate $page.Lastmod (lt $page.PublishDate $page.Lastmod) }}
+
+{{ if $draft }}
+    {{ $class = $class | append "paige-status-draft" "paige-status-unpublished" }}
+{{ end }}
+
+{{ if $expired }}
+    {{ $class = $class | append "paige-status-expired" "paige-status-unpublished" }}
+{{ end }}
+
+{{ if $future }}
+    {{ $class = $class | append "paige-status-future" "paige-status-unpublished" }}
+{{ end }}
+
+{{ if $modified }}
+    {{ $class = $class | append "paige-status-modified" }}
+{{ end }}
+
+{{ if not (or $draft $expired $future) }}
+    {{ $class = $class | append "paige-status-published" }}
+{{ end }}
+
+{{ with $page.Kind }}
+    {{ if eq . "home" }}
+        {{ $class = $class | append "paige-kind-home" }}
+    {{ else if eq . "section" }}
+        {{ $class = $class | append "paige-kind-section" }}
+    {{ else if eq . "page" }}
+        {{ $class = $class | append "paige-kind-page" }}
+    {{ else if eq . "taxonomy" }}
+        {{ $class = $class | append "paige-kind-taxonomy" }}
+    {{ else if eq . "term" }}
+        {{ $class = $class | append "paige-kind-term" }}
+    {{ end }}
+{{ end }}
+
+{{ $class = delimit ($class | uniq | sort) " " }}
+
+<article class="{{ if $min }} align-items-center d-flex flex-column {{ end }} {{ $class }}" id="paige-page">
+    {{ partial "paige/func-include.html" (dict "name" "page-first%s.html" "page" $page) | safeHTML }}
+    {{ partial "paige/page-header.html" $page }}
+
+    <main class="mw-100" id="paige-page-content" {{ if $microdata }} itemprop="articleBody" {{ end }}>
+        {{ partial "paige/func-include.html" (dict "name" "page-body-first%s.html" "page" $page) | safeHTML }}
+
+        {{ with $content }}
+            {{ . | safeHTML }}
+        {{ end }}
+
+        {{ partial "paige/func-include.html" (dict "name" "page-body-last%s.html" "page" $page) | safeHTML }}
+    </main>
+
+    {{ partial "paige/page-footer.html" $page }}
+    {{ partial "paige/func-include.html" (dict "name" "page-last%s.html" "page" $page) | safeHTML }}
+</article>

@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Murupolku
+paige_collections:
+  other: Kokoelmat
+paige_edit:
+  other: Muokkaa
+paige_error:
+  other: Virhe
+paige_figure:
+  other: Kuva
+paige_first:
+  other: Ensimmäinen
+paige_history:
+  other: Historia
+paige_home:
+  other: Etusivu
+paige_javascript_is_required:
+  other: JavaScript vaaditaan
+paige_last:
+  other: Viimeinen
+paige_menu:
+  other: Valikko
+paige_minutes:
+  one: minuutti
+  other: minuuttia
+paige_next:
+  other: Seuraava
+paige_nothing_found:
+  other: Ei löytynyt mitään
+paige_page_list_navigation:
+  other: Sivuluettelon navigointi
+paige_pages:
+  other: Sivut
+paige_previous:
+  other: Edellinen
+paige_query:
+  other: Kysely
+paige_search:
+  other: Haku
+paige_searching:
+  other: Etsitään
+paige_sections:
+  other: Osat
+paige_something_found:
+  other: Jotain löytyi
+paige_words:
+  one: sana
+  other: sanaa

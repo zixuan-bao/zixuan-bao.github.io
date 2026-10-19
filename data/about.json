@@ -1,0 +1,9 @@
+{
+  "layout": "profile-left",
+  "show_profile": true,
+  "blocks": [
+    { "type": "text", "title": "A little about me", "text": "Welcome. I am Zixuan Bao. This website brings together my research, notes, thoughts, writings, photographs, and useful resources." },
+    { "type": "text", "title": "Around this website", "text": "Research is organized by field, and Notes by subject. Thoughts and Writings collect shorter reflections and longer pieces. Gallery follows places, while Resources keeps useful links close at hand." },
+    { "type": "text", "title": "Currently", "text": "This is a template preview. Personal affiliations and additional information can be added using the website editor." }
+  ]
+}

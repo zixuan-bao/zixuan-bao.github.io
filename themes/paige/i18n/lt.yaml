@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Duonos trupiniai
+paige_collections:
+  other: Kolekcijos
+paige_edit:
+  other: Redaguoti
+paige_error:
+  other: Klaida
+paige_figure:
+  other: Paveikslėlis
+paige_first:
+  other: Pirmas
+paige_history:
+  other: Istorija
+paige_home:
+  other: Pagrindinis
+paige_javascript_is_required:
+  other: Reikalingas JavaScript
+paige_last:
+  other: Paskutinis
+paige_menu:
+  other: Meniu
+paige_minutes:
+  one: minutė
+  other: minutės
+paige_next:
+  other: Kitas
+paige_nothing_found:
+  other: Nieko nerasta
+paige_page_list_navigation:
+  other: Puslapių sąrašo naršymas
+paige_pages:
+  other: Puslapiai
+paige_previous:
+  other: Ankstesnis
+paige_query:
+  other: Klausimas
+paige_search:
+  other: Ieškoti
+paige_searching:
+  other: Ieškoma
+paige_sections:
+  other: Sekcijos
+paige_something_found:
+  other: Rasta kažkas
+paige_words:
+  one: žodis
+  other: žodžiai

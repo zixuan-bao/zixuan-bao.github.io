@@ -1,0 +1,171 @@
+{{ $page := . }}
+
+{{ $copyright := site.Copyright | markdownify | plainify }}
+{{ $date := "Mon, 02 Jan 2006 15:04:05 MST" }}
+{{ $description := cond $page.IsHome ($page.Param "paige.site.description") $page.Description | markdownify | plainify }}
+{{ $editor := $page.Param "paige.feeds.rss.managing_editor" }}
+{{ $language := $page.Language.Locale }}
+{{ $limit := site.Config.Services.RSS.Limit }}
+{{ $link := ($page.AlternativeOutputFormats.Get "html").Permalink }}
+{{ $master := $page.Param "paige.feeds.rss.web_master" }}
+{{ $subpages := $page.RegularPagesRecursive }}
+
+{{ $lastmod := site.Lastmod.Format $date }}
+
+{{ if gt $limit 0 }}
+    {{ $subpages = $subpages | first $limit }}
+{{ end }}
+
+{{ $titles := slice }}
+
+{{ if $page.IsHome }}
+    {{ $titles = slice (site.Title | default $page.Title | markdownify | plainify) }}
+{{ else }}
+    {{ with $page.Title }}
+        {{ $titles = slice (. | markdownify | plainify) }}
+    {{ end }}
+
+    {{ range .Ancestors }}
+        {{ $title := cond .IsHome (site.Title | default .Title) .Title }}
+
+        {{ with $title }}
+            {{ $titles = $titles | append (. | markdownify | plainify) }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ $title := delimit $titles " · " }}
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<rss version="2.0" {{ with $language }} xml:lang="{{ . }}" {{ end }} xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        {{ with $copyright }}
+            <copyright>{{ . }}</copyright>
+        {{ end }}
+
+        {{ with $description }}
+            <description>{{ . }}</description>
+        {{ end }}
+
+        {{ with $language }}
+            <language>{{ . }}</language>
+        {{ end }}
+
+        {{ with $lastmod }}
+            <lastBuildDate>{{ . }}</lastBuildDate>
+        {{ end }}
+
+        {{ with $link }}
+            <link>{{ . }}</link>
+        {{ end }}
+
+        {{ with $page.OutputFormats.Get "rss" }}
+            <atom:link href="{{ .Permalink }}" hreflang="{{ $page.Language.Locale }}" rel="self" type="application/rss+xml"/>
+        {{ end }}
+
+        {{ range $page.OutputFormats }}
+            {{ $rel := cond (eq .Rel "canonical") "alternate" .Rel }}
+
+            <atom:link href="{{ .Permalink }}" hreflang="{{ $page.Language.Locale }}" rel="{{ $rel }}" type="{{ .MediaType }}"/>
+        {{ end }}
+
+        {{ range $t := $page.Translations }}
+            {{ range .OutputFormats }}
+                <atom:link href="{{ .Permalink }}" hreflang="{{ $t.Language.Locale }}" rel="{{ .Rel }}" type="{{ .MediaType }}"/>
+            {{ end }}
+        {{ end }}
+
+        {{ with $editor }}
+            <managingEditor>{{ . }}</managingEditor>
+        {{ end }}
+
+        {{ with $title }}
+            <title>{{ . }}</title>
+        {{ end }}
+
+        {{ with $master }}
+            <webMaster>{{ . }}</webMaster>
+        {{ end }}
+
+        {{ range $subpage := $subpages }}
+            {{ if not ($subpage.Param "paige.exclude_feeds") }}
+                <item>
+                    {{ $author := "" }}
+                    {{ $authors := partial "paige/func-authors.html" $subpage }}
+                    {{ $content := $subpage.Content }}
+                    {{ $external := and $subpage.Params.link (not ($subpage.Param "paige.feeds.disable_link")) | not | not }}
+                    {{ $id := printf "tag:%s,%s:%s" (urls.Parse site.BaseURL).Host ($subpage.PublishDate.Format "2006-01-02") (cond ($subpage.Params.id | not) $subpage.RelPermalink $subpage.Params.id) }}
+                    {{ $published := $subpage.PublishDate.Format $date }}
+                    {{ $title := $subpage.Title | markdownify | plainify | htmlUnescape | transform.XMLEscape }}
+
+                    {{ $link := cond $external (htmlEscape $subpage.Params.link) $subpage.Permalink }}
+
+                    {{ with $authors }}
+                        {{ $primary := index . 0 }}
+
+                        {{ if and $primary.Params.paige.author.email $primary.Params.paige.author.name }}
+                            {{ $author = printf "%s (%s)" $primary.Params.paige.author.email ($primary.Params.paige.author.name | default ($primary.Title | markdownify | plainify)) }}
+                        {{ else if $primary.Params.email }}
+                            {{ $author = $primary.Params.email }}
+                        {{ end }}
+                    {{ end }}
+
+                    {{ if and $content $external }}
+                        {{ $text := or ($subpage.Param "paige.feeds.page_link" | markdownify) "⏎" }}
+
+                        {{ $footer := printf `<p><a href="%s">%s</a></p>` $subpage.Permalink $text }}
+
+                        {{ $content = print $content $footer }}
+                    {{ end }}
+
+                    {{ if not $content }}
+                        {{ $content = markdownify $subpage.Description }}
+                    {{ end }}
+
+                    {{ $content = replaceRE `<a href="#fn:(\d+)" class="footnote-ref" role="doc-noteref">` (printf `<a href="%s#fn:$1" class="footnote-ref" role="doc-noteref">` $subpage.Permalink) $content }}
+                    {{ $content = replaceRE `<a href="#fnref:(\d+)" class="footnote-backref" role="doc-backlink">` (printf `<a href="%s#fnref:$1" class="footnote-backref" role="doc-backlink">` $subpage.Permalink) $content }}
+                    {{ $content = partial "paige/func-minify.html" $content }}
+
+                    {{ with $author }}
+                        <author>{{ . }}</author>
+                    {{ end }}
+
+                    {{ with $content }}
+                        <description><![CDATA[{{ . }}]]></description>
+                    {{ end }}
+
+                    {{ with $id }}
+                        <guid isPermaLink="false">{{ . }}</guid>
+                    {{ end }}
+
+                    {{ with $link }}
+                        <link>{{ . }}</link>
+                    {{ end }}
+
+                    {{ range $subpage.OutputFormats }}
+                        {{ $rel := cond (eq .Rel "canonical") "alternate" .Rel }}
+
+                        {{ $href := cond (and (eq $rel "alternate") (eq .MediaType.Type "text/html")) $link .Permalink }}
+
+                        <atom:link href="{{ $href }}" hreflang="{{ $subpage.Language.Locale }}" rel="{{ $rel }}" type="{{ .MediaType }}"/>
+                    {{ end }}
+
+                    {{ range $t := $subpage.Translations }}
+                        {{ range .OutputFormats }}
+                            <atom:link href="{{ .Permalink }}" hreflang="{{ $t.Language.Locale }}" rel="{{ .Rel }}" type="{{ .MediaType }}"/>
+                        {{ end }}
+                    {{ end }}
+
+                    {{ with $published }}
+                        <pubDate>{{ . }}</pubDate>
+                    {{ end }}
+
+                    {{ with $title }}
+                        <title>{{ . }}</title>
+                    {{ end }}
+                </item>
+            {{ end }}
+        {{ end }}
+    </channel>
+</rss>

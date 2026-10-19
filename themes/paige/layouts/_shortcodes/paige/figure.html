@@ -1,0 +1,69 @@
+{{ $caption := .Get 0 | default (.Get "caption") | markdownify }}
+{{ $content := .InnerDeindent | markdownify }}
+{{ $float := .Get "float" }}
+{{ $horizontal := .Get "horizontal" | default "center" }}
+{{ $maxWidth := .Get "maxwidth" }}
+{{ $number := .Get "number" }}
+{{ $numbered := .Get "numbered" }}
+{{ $vertical := .Get "vertical" | default "center" }}
+{{ $width := .Get "width" }}
+
+{{ if not $content }}
+    {{ errorf "layouts/_shortcodes/paige/figure.html: no content" }}
+{{ end }}
+
+{{ $showCaption := $caption }}
+{{ $sideMargin := "" }}
+{{ $table := false }}
+{{ $widths := slice }}
+
+{{ if and $caption $float }}
+    {{ $table = true }}
+{{ end }}
+
+{{ if $maxWidth }}
+    {{ $widths = $widths | append (printf "max-width: %v" $maxWidth) }}
+{{ end }}
+
+{{ if $width }}
+    {{ $widths = $widths | append (printf "width: %v" $width) }}
+{{ end }}
+
+{{ $widths = delimit ($widths | sort) "; " }}
+
+{{ if $float }}
+    {{ if eq $float "start" }}
+        {{ $sideMargin = "me-4" }}
+    {{ else if eq $float "end" }}
+        {{ $sideMargin = "ms-4" }}
+    {{ else }}
+        {{ errorf "layouts/_shortcodes/paige/figure.html: invalid float: %q" $float }}
+    {{ end }}
+{{ end }}
+
+{{ if $caption }}
+    {{ if $number }}
+        {{ $caption = printf "%v %v: %v" (i18n "paige_figure") $number $caption }}
+    {{ end }}
+{{ else }}
+    {{ if $number }}
+        {{ $caption = printf "%v %v" (i18n "paige_figure") $number }}
+        {{ $showCaption = true }}
+    {{ else if $numbered }}
+        {{ $showCaption = true }}
+    {{ end }}
+{{ end }}
+
+{{/* The markup below cannot be indented due to nested shortcodes within Markdown. */}}
+
+<div class="paige-shortcode-figure {{ if $numbered }} paige-shortcode-figure-numbered {{ end }}">
+<div class="align-items-{{ $vertical }} d-flex {{ with $float }} float-{{ . }} {{ end }} h-100 justify-content-{{ $horizontal }} {{ with $sideMargin }} {{ . }} {{ end }}">
+<figure class="{{ if $table }} d-table {{ end }} mb-0" {{ with $widths }} style="{{ . | safeCSS }}" {{ end }}>
+<div class="d-flex justify-content-{{ $horizontal }} text-{{ $horizontal }}">{{ $content }}</div>
+
+{{ if $showCaption }}
+<figcaption class="figure-caption mt-2 text-{{ $horizontal }}" {{ if $table }} style="caption-side: bottom; display: table-caption" {{ end }}>{{ $caption }}</figcaption>
+{{ end }}
+</figure>
+</div>
+</div>

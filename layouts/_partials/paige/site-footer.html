@@ -1,0 +1,8 @@
+<footer class="site-footer">
+  <div class="footer-top"><a class="footer-name" href="{{ site.Home.RelPermalink }}">{{ hugo.Data.profile.display_name }}<span class="blue-dot">.</span></a><p>{{ hugo.Data.home.footer_text }}</p>
+    <div class="footer-links">{{ range hugo.Data.profile.socials }}<a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }} {{ partial "icon.html" "external" }}</a>{{ end }}<a href="{{ "rss.xml" | relURL }}">RSS {{ partial "icon.html" "rss" }}</a></div>
+  </div>
+  <div class="footer-bottom"><span>© {{ now.Year }} {{ site.Copyright }}<span class="footer-credit"> · Built with <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/willfaught/paige">Paige</a></span></span><div><a href="{{ "archive/" | relURL }}">Archive</a><a href="{{ "tags/" | relURL }}">Tags</a><a href="{{ "series/" | relURL }}">Series</a><a href="{{ "privacy/" | relURL }}">Privacy</a><a href="#top" aria-label="Back to top">↑</a></div></div>
+  {{ if site.Params.demo }}<p class="demo-note">Template preview. Sample entries, dates, affiliations, and stock photographs are illustrative.</p>{{ end }}
+</footer>
+<dialog class="lightbox" aria-label="Photo viewer"><div class="lightbox-toolbar"><span id="photo-position"></span><button class="icon-button" type="button" data-lightbox-close aria-label="Close photo viewer">{{ partial "icon.html" "close" }}</button></div><img class="lightbox-image" alt=""><div class="lightbox-bottom"><button type="button" data-photo-prev aria-label="Previous photo">←</button><p id="photo-caption"></p><button type="button" data-photo-next aria-label="Next photo">→</button></div></dialog>

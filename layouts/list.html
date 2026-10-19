@@ -1,0 +1,16 @@
+{{ define "main" }}
+<main id="main" tabindex="-1" class="inner-page">
+  {{ partial "breadcrumbs.html" . }}
+  <header class="page-heading"><p class="eyebrow">{{ .Params.kicker | default "The collection" }}</p><h1>{{ .Title }}<span class="blue-dot">.</span></h1>{{ with .Description }}<p>{{ . }}</p>{{ end }}</header>
+  {{ if eq .Section "about" }}{{ partial "about.html" . }}
+  {{ else if eq .Section "gallery" }}<div class="city-grid gallery-index">{{ range .RegularPages.ByWeight }}{{ partial "city-card.html" . }}{{ end }}</div>
+  {{ else if or (eq .Kind "taxonomy") (eq .Kind "term") }}
+    {{ if eq .Kind "taxonomy" }}<div class="topic-directory">{{ range .Pages.ByTitle }}<a href="{{ .RelPermalink }}">{{ .Title }} <span>{{ len .RegularPagesRecursive }} {{ partial "icon.html" "arrow" }}</span></a>{{ end }}</div>
+    {{ else }}<div class="entry-list">{{ range .RegularPages.ByDate.Reverse }}{{ partial "entry.html" (dict "page" .) }}{{ end }}</div>{{ end }}
+  {{ else }}
+    {{ with .Content }}<div class="section-content prose">{{ . }}</div>{{ end }}
+    {{ if .Sections }}<nav id="all" class="topic-nav" aria-label="{{ .Title }} topics"><a class="selected" href="#all" data-filter="all">All</a>{{ range .Sections.ByWeight }}<a href="#{{ .Title | anchorize }}" data-filter="{{ .RelPermalink }}">{{ .Title }} <span>{{ len .RegularPagesRecursive }}</span></a>{{ end }}</nav><div class="grouped-entries">{{ range .Sections.ByWeight }}<section class="topic-section" id="{{ .Title | anchorize }}" data-topic-group="{{ .RelPermalink }}"><div class="topic-heading"><h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>{{ with .Description }}<p>{{ . }}</p>{{ end }}</div>{{ range .RegularPages.ByWeight }}{{ partial "entry.html" (dict "page" .) }}{{ end }}</section>{{ end }}</div>
+    {{ else }}<div class="entry-list">{{ range .RegularPages.ByWeight }}{{ partial "entry.html" (dict "page" .) }}{{ end }}</div>{{ end }}
+  {{ end }}
+</main>
+{{ end }}

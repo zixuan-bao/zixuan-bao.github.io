@@ -1,0 +1,40 @@
+{{ $params := . }}
+
+{{ $page := $params.page }}
+{{ $url := $params.url }}
+
+{{ $result := "" }}
+
+{{ if (urls.Parse $url).Scheme }}
+    {{ with try (resources.GetRemote $url) }}
+        {{ with .Err }}
+            {{ errorf "layouts/_partials/paige/func-resource.html: cannot get remote resource %q: %v" $url . }}
+        {{ else with .Value }}
+            {{ $result = resources.Copy (print $page.Path "/" (sha256 (print $url (sha256 .Content))) "." .MediaType.FirstSuffix.Suffix) . }}
+        {{ else }}
+            {{ errorf "layouts/_partials/paige/func-resource.html: cannot find remote resource %q" $url }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ if and (not $result) $page }}
+    {{ with $page.Resources.GetMatch $url }}
+        {{ $result = . }}
+    {{ else with $page.Resources.Get $url }}
+        {{ $result = . }}
+    {{ end }}
+{{ end }}
+
+{{ if not $result }}
+    {{ with resources.GetMatch $url }}
+        {{ $result = . }}
+    {{ else with resources.Get $url }}
+        {{ $result = . }}
+    {{ end }}
+{{ end }}
+
+{{ if not $result }}
+    {{ errorf "layouts/_partials/paige/func-resource.html: cannot find resource %q" $url }}
+{{ end }}
+
+{{ return $result }}

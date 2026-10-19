@@ -1,0 +1,14 @@
+{{ $context := . }}
+
+{{ $options := dict }}
+{{ $overrides := dict "noclasses" true }}
+
+{{ with $context.Options }}
+    {{ $options = merge $overrides . }}
+{{ else }}
+    {{ $options = $overrides }}
+{{ end }}
+
+{{ $result := transform.HighlightCodeBlock $context $options }}
+
+{{ $result.Wrapped }}

@@ -1,0 +1,12 @@
+{{ $bootstrap := resources.Get "vendor/bootstrap.min.css" | fingerprint }}
+<link rel="stylesheet" href="{{ $bootstrap.RelPermalink }}" integrity="{{ $bootstrap.Data.Integrity }}">
+{{ $css := resources.Get "css/site.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+{{ $preferences := resources.Get "css/preferences.css" | resources.ExecuteAsTemplate "css/preferences.css" . | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $preferences.RelPermalink }}" integrity="{{ $preferences.Data.Integrity }}">
+<link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+<link rel="canonical" href="{{ .Permalink }}">
+<meta name="color-scheme" content="light dark">
+{{ if or site.Params.demo (eq .Layout "link-placeholder") }}<meta name="robots" content="noindex, nofollow">{{ end }}
+{{ range .AlternativeOutputFormats }}<link href="{{ .RelPermalink }}" rel="{{ .Rel }}" type="{{ .MediaType }}">{{ end }}
+<script>document.documentElement.classList.add('js');</script>

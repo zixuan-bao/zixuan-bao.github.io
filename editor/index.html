@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>网站工作台 · Zixuan Bao</title><link rel="stylesheet" href="/editor.css"><!--EDITOR_BOOTSTRAP--><script defer src="/app.js"></script></head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar"><a class="brand" href="/"><span class="brand-symbol">Z.</span><div><strong>网站工作台</strong><small>Zixuan Bao</small></div></a><p class="sidebar-label">网站设置</p><nav id="settings-nav"></nav><p class="sidebar-label">内容管理</p><nav id="content-nav"></nav><div class="sidebar-bottom"><span class="local-dot"></span>本机编辑 · 保存到项目文件夹<p>内容归你所有，修改不需要 HTML。</p></div></aside>
+  <div class="workspace"><header class="toolbar"><div><span id="breadcrumb">网站设置</span><span id="save-state">已保存</span></div><div class="toolbar-actions"><button id="refresh" class="quiet" type="button">重新读取</button><a class="quiet" href="http://localhost:1313/" target="_blank" rel="noopener">打开预览 ↗</a><button id="publish" class="publish-button" type="button">发布到网站 ↗</button></div></header>
+  <main id="main"><div class="editor-panel"><div class="panel-heading"><div><p class="eyebrow" id="panel-kicker">YOUR WEBSITE</p><h1 id="panel-title">正在读取内容…</h1><p id="panel-description"></p></div><div id="panel-actions"></div></div><div id="editor-content"></div></div><aside class="preview-panel"><div class="preview-heading"><span>网站预览</span><button id="reload-preview" type="button">刷新 ↻</button></div><iframe id="preview" title="网站实时预览" src="http://localhost:1313/"></iframe><p>保存后预览更新；“发布到网站”才会更新公开页面。</p></aside></main>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="media-dialog"><div class="dialog-header"><div><h2>选择图片</h2><p>上传本地图片，或选择图库中已有的图片。</p></div><button type="button" id="close-media" aria-label="关闭图库">×</button></div><label class="upload-button">上传图片<input id="media-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden></label><div id="media-grid"></div></dialog>
+<dialog id="publish-dialog"><div class="dialog-header"><div><h2>发布到公开网站</h2><p>会先构建并检查，再上传到 GitHub。GitHub Pages 完成部署后才会更新。</p></div><button id="close-publish" type="button" aria-label="关闭发布状态">×</button></div><pre id="publish-output" aria-live="polite"></pre><div class="publish-footer"><span id="publish-status"></span><a href="https://github.com/zixuanb3/zixuanb3.github.io/actions" target="_blank" rel="noopener">查看 GitHub 部署 ↗</a></div></dialog>
+</body></html>

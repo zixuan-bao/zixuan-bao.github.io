@@ -1,0 +1,45 @@
+{{ $params := . }}
+
+{{ $context := $params.context }}
+{{ $href := $params.href }}
+{{ $integrity := $params.integrity }}
+{{ $map := not hugo.IsProduction }}
+{{ $origin := $params.crossorigin | default "anonymous" }}
+{{ $page := $params.page }}
+{{ $paths := $params.includepaths }}
+{{ $policy := $params.referrerpolicy | default "no-referrer" }}
+{{ $sass := $params.sass }}
+{{ $style := cond hugo.IsProduction "compressed" "" }}
+{{ $template := $params.template }}
+
+{{ if not $href }}
+    {{ errorf "layouts/_partials/paige/tag-link.html: no href" }}
+{{ end }}
+
+{{ $resource := partial "paige/func-resource.html" (dict "page" $page "url" $href) }}
+
+{{ if $resource }}
+    {{ if $template }}
+        {{ $base := (urls.Parse site.BaseURL).Path }}
+
+        {{ $dir := path.Dir $resource.RelPermalink | strings.TrimPrefix $base }}
+        {{ $ext := path.Ext $resource.RelPermalink }}
+        {{ $hash := printf "%v%s" $context $resource.Content | sha1 }}
+        {{ $name := path.BaseName $resource.RelPermalink }}
+
+        {{ $path := printf "%s/%s.%s%s" $dir $name $hash $ext }}
+
+        {{ $resource = resources.ExecuteAsTemplate $path $context $resource }}
+    {{ end }}
+
+    {{ if $sass }}
+        {{ $resource = $resource | toCSS (dict "enableSourceMap" $map "includePaths" $paths "outputStyle" $style) }}
+    {{ end }}
+
+    {{ $resource = $resource | minify | fingerprint }}
+
+    {{ $href = $resource.RelPermalink }}
+    {{ $integrity = $resource.Data.Integrity }}
+{{ end }}
+
+<link {{ with $origin }} crossorigin="{{ . }}" {{ end }} href="{{ $href }}" {{ with $integrity }} integrity="{{ . }}" {{ end }} {{ with $policy }} referrerpolicy="{{ . }}" {{ end }} rel="stylesheet">

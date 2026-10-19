@@ -1,0 +1,7 @@
+{{- $index := slice -}}
+{{- range site.Pages -}}
+  {{- if and (not .IsHome) (not .Params.exclude_search) (or (eq .Kind "page") (eq .Kind "section")) -}}
+    {{- $index = $index | append (dict "title" .Title "description" .Description "url" .RelPermalink "section" (.Section | humanize) "topic" .Parent.Title "authors" .Params.authors "tags" .Params.tags) -}}
+  {{- end -}}
+{{- end -}}
+{{- $index | jsonify -}}

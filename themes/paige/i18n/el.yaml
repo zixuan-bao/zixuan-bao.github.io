@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Ψίχουλα
+paige_collections:
+  other: Συλλογές
+paige_edit:
+  other: Επεξεργασία
+paige_error:
+  other: Σφάλμα
+paige_figure:
+  other: Εικόνα
+paige_first:
+  other: Πρώτη
+paige_history:
+  other: Ιστορικό
+paige_home:
+  other: Αρχική
+paige_javascript_is_required:
+  other: Απαιτείται JavaScript
+paige_last:
+  other: Τελευταία
+paige_menu:
+  other: Μενού
+paige_minutes:
+  one: λεπτό
+  other: λεπτά
+paige_next:
+  other: Επόμενο
+paige_nothing_found:
+  other: Δεν βρέθηκαν αποτελέσματα
+paige_page_list_navigation:
+  other: Πλοήγηση στη λίστα σελίδων
+paige_pages:
+  other: Σελίδες
+paige_previous:
+  other: Προηγούμενη
+paige_query:
+  other: Ερώτημα
+paige_search:
+  other: Αναζήτηση
+paige_searching:
+  other: Αναζήτηση σε εξέλιξη
+paige_sections:
+  other: Ενότητες
+paige_something_found:
+  other: Βρέθηκε κάτι
+paige_words:
+  one: λέξη
+  other: λέξεις

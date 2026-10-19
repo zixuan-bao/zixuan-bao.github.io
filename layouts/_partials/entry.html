@@ -1,0 +1,11 @@
+{{ $page := .page }}
+{{ $research := eq $page.Section "research" }}
+<article class="entry {{ if $research }}research-entry{{ with $page.Params.image }} has-image{{ end }}{{ else }}text-entry{{ with $page.Params.image }} has-image{{ end }}{{ end }}" data-topic="{{ $page.Parent.RelPermalink }}">
+  {{ with $page.Params.image }}<a class="entry-image" href="{{ $page.RelPermalink }}" aria-label="Details for {{ $page.Title }}"><img src="{{ . | relURL }}" alt="{{ $page.Params.image_alt | default "Illustrative research image" }}" loading="lazy" width="640" height="420"></a>{{ end }}
+  <div class="entry-body"><div class="entry-topline"><span class="eyebrow">{{ $page.Parent.Title }}</span>{{ with $page.Params.status }}<span class="status {{ if eq . "In progress" }}in-progress{{ end }}">{{ . }}</span>{{ end }}</div>
+  <h3>{{ with $page.Params.link }}<a href="{{ . | relURL }}" {{ if hasPrefix . "https://" }}target="_blank" rel="noopener noreferrer"{{ end }}>{{ $page.Title }} <span class="external-mark">↗</span></a>{{ else }}<a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>{{ end }}</h3>
+  <p>{{ $page.Description }}</p>
+  <div class="entry-meta">{{ with $page.Params.authors }}<span>{{ delimit . ", " }}</span>{{ end }}{{ if not $page.Date.IsZero }}<time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format "Jan 2, 2006" }}</time>{{ end }}{{ if and (not $page.Lastmod.IsZero) (gt $page.Lastmod $page.Date) }}<span>Updated {{ $page.Lastmod.Format "Jan 2, 2006" }}</span>{{ end }}</div>
+  {{ if $research }}<div class="entry-actions">{{ with $page.Params.link }}<a href="{{ . | relURL }}" {{ if hasPrefix . "https://" }}target="_blank" rel="noopener noreferrer"{{ end }}>{{ $page.Params.link_label | default "Manuscript" }} {{ partial "icon.html" "external" }}</a>{{ else }}<span class="muted">Manuscript forthcoming</span>{{ end }}<a class="subtle-link" href="{{ $page.RelPermalink }}">Details {{ partial "icon.html" "arrow" }}</a></div>{{ else }}<a class="entry-details" href="{{ $page.RelPermalink }}">Entry details <span class="visually-hidden">for {{ $page.Title }}</span></a>{{ end }}
+  </div>
+</article>

@@ -1,0 +1,10 @@
+{{ $about := hugo.Data.about }}
+<div class="about-page-grid {{ $about.layout }} {{ if not $about.show_profile }}profile-hidden{{ end }}">
+  {{ if $about.show_profile }}<div>
+    <a href="{{ site.Home.RelPermalink }}" aria-label="Return home"><img class="about-avatar" src="{{ hugo.Data.profile.avatar | relURL }}" width="150" height="150" alt="{{ hugo.Data.profile.display_name }}'s avatar"></a>
+    <h2>{{ hugo.Data.profile.full_name }}</h2>
+    {{ if or hugo.Data.profile.school hugo.Data.profile.program }}<p>{{ hugo.Data.profile.program }}<br><span class="muted">{{ hugo.Data.profile.school }}</span></p>{{ end }}
+    <div class="social-list">{{ range hugo.Data.profile.socials }}<a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ partial "icon.html" .icon }} {{ .name }} ↗</a>{{ end }}{{ with hugo.Data.profile.email }}<a href="mailto:{{ . }}">{{ partial "icon.html" "mail" }} Email</a>{{ end }}</div>
+  </div>{{ end }}
+  <div class="prose">{{ range $about.blocks }}{{ partial "about-block.html" . }}{{ end }}</div>
+</div>

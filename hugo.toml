@@ -1,0 +1,80 @@
+baseURL = "https://zixuanb3.github.io/"
+locale = "en-US"
+title = "Zixuan Bao"
+theme = "paige"
+timeZone = "America/Chicago"
+enableRobotsTXT = true
+summaryLength = 30
+copyright = "Zixuan Bao"
+
+[languages.en]
+label = "English"
+locale = "en-US"
+weight = 1
+
+[pagination]
+pagerSize = 12
+
+[taxonomies]
+tag = "tags"
+series = "series"
+
+[outputs]
+home = [ "HTML", "RSS", "Atom", "SearchIndex" ]
+section = [ "HTML", "RSS" ]
+
+[outputFormats.SearchIndex]
+mediaType = "application/json"
+baseName = "search"
+isPlainText = true
+notAlternative = true
+
+[markup.goldmark.renderer]
+unsafe = false
+
+[markup.highlight]
+noClasses = false
+
+[params]
+description = "Research, notes, thoughts, writings, photographs, and useful things."
+demo = true
+
+[params.paige.site]
+color = "#2864d9"
+color_scheme = "auto"
+description = "Research, notes, thoughts, writings, photographs, and useful things."
+
+[[menus.main]]
+name = "About"
+pageRef = "/about"
+weight = 10
+
+[[menus.main]]
+name = "Research"
+pageRef = "/research"
+weight = 20
+
+[[menus.main]]
+name = "Notes"
+pageRef = "/notes"
+weight = 30
+
+[[menus.main]]
+name = "Thoughts"
+pageRef = "/thoughts"
+weight = 40
+
+[[menus.main]]
+name = "Writings"
+pageRef = "/writings"
+weight = 50
+
+[[menus.main]]
+name = "Gallery"
+pageRef = "/gallery"
+weight = 60
+
+[[menus.main]]
+name = "Resources"
+pageRef = "/resources"
+weight = 70

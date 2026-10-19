@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: ब्रेडक्रम्ब्स
+paige_collections:
+  other: संग्रह
+paige_edit:
+  other: संपादित करें
+paige_error:
+  other: त्रुटि
+paige_figure:
+  other: चित्र
+paige_first:
+  other: पहला
+paige_history:
+  other: इतिहास
+paige_home:
+  other: मुखपृष्ठ
+paige_javascript_is_required:
+  other: जावास्क्रिप्ट आवश्यक है
+paige_last:
+  other: अंतिम
+paige_menu:
+  other: मेनू
+paige_minutes:
+  one: मिनट
+  other: मिनट
+paige_next:
+  other: अगला
+paige_nothing_found:
+  other: कुछ नहीं मिला
+paige_page_list_navigation:
+  other: पृष्ठ सूची नेविगेशन
+paige_pages:
+  other: पृष्ठ
+paige_previous:
+  other: पिछला
+paige_query:
+  other: प्रश्न
+paige_search:
+  other: खोजें
+paige_searching:
+  other: खोज रहे हैं
+paige_sections:
+  other: अनुभाग
+paige_something_found:
+  other: कुछ मिला
+paige_words:
+  one: शब्द
+  other: शब्दों

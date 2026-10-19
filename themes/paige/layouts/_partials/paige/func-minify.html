@@ -1,0 +1,5 @@
+{{ $html := . }}
+
+{{ $result := (resources.FromString (print "paige." (sha1 $html) ".html") $html | minify).Content }}
+
+{{ return $result }}

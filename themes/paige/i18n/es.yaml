@@ -1,0 +1,48 @@
+paige_breadcrumbs:
+  other: Migas de pan
+paige_collections:
+  other: Colecciones
+paige_edit:
+  other: Editar
+paige_error:
+  other: Error
+paige_figure:
+  other: Figura
+paige_first:
+  other: Primero
+paige_history:
+  other: Historial
+paige_home:
+  other: Inicio
+paige_javascript_is_required:
+  other: Se requiere JavaScript
+paige_last:
+  other: Último
+paige_menu:
+  other: Menú
+paige_minutes:
+  one: minuto
+  other: minutos
+paige_next:
+  other: Siguiente
+paige_nothing_found:
+  other: No se encontró nada
+paige_page_list_navigation:
+  other: Navegación de la lista de páginas
+paige_pages:
+  other: Páginas
+paige_previous:
+  other: Anterior
+paige_query:
+  other: Consulta
+paige_search:
+  other: Buscar
+paige_searching:
+  other: Buscando
+paige_sections:
+  other: Secciones
+paige_something_found:
+  other: Se encontró algo
+paige_words:
+  one: palabra
+  other: palabras
