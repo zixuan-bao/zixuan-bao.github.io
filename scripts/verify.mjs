@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import TOML from '@iarna/toml';
 
 const root = path.resolve(import.meta.dirname, '..', 'public');
+const config = TOML.parse(fs.readFileSync(path.resolve(root, '..', 'hugo.toml'), 'utf8'));
+const siteURL = new URL(config.baseURL);
 assert(fs.existsSync(root), 'Build the site before running checks.');
 const files = [];
 function collect(folder) {
@@ -34,7 +36,7 @@ let checkedImages = 0;
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, 'utf8');
   const relative = path.relative(root, file).split(path.sep).join('/');
-  const pageURL = new URL(relative === 'index.html' ? '/' : `/${relative.replace(/index\.html$/, '')}`, 'https://zixuanb3.github.io');
+  const pageURL = new URL(relative === 'index.html' ? '/' : `/${relative.replace(/index\.html$/, '')}`, siteURL);
   const ids = [...html.matchAll(/\bid\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)].map(match => match[1] ?? match[2] ?? match[3]);
   if (new Set(ids).size !== ids.length) errors.push(`${relative}: duplicate element IDs`);
   if ((html.match(/<h1(?:\s|>)/g) || []).length !== 1) errors.push(`${relative}: expected one main heading`);
@@ -47,7 +49,7 @@ for (const file of htmlFiles) {
     const href = attr.src ?? attr.href ?? attr.action ?? attr['data-photo-src'];
     if (!href || /^(mailto:|tel:|data:|javascript:)/.test(href)) continue;
     const url = new URL(href, pageURL);
-    if (!['zixuanb3.github.io', 'localhost', '127.0.0.1'].includes(url.hostname)) continue;
+    if (![siteURL.hostname, 'localhost', '127.0.0.1'].includes(url.hostname)) continue;
     checkedLinks++;
     const destination = targetFile(url);
     if (!destination) { errors.push(`${relative}: missing destination ${href}`); continue; }
@@ -63,11 +65,10 @@ for (const file of htmlFiles) {
 const homepage = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const nav = homepage.match(/<nav[^>]*id=(?:"main-navigation"|main-navigation)[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 const labels = [...nav.matchAll(/<a\b[^>]*>([^<]+)<\/a>/g)].map(match => match[1]);
-const config = TOML.parse(fs.readFileSync(path.resolve(root, '..', 'hugo.toml'), 'utf8'));
 assert.deepEqual(labels, [...config.menus.main].sort((a,b) => a.weight - b.weight).map(menu => menu.name), 'Navigation does not match the saved settings.');
 const searchIndex = JSON.parse(fs.readFileSync(path.join(root, 'search.json'), 'utf8'));
 assert(new Set(searchIndex.map(page => page.url)).size === searchIndex.length, 'Search contains duplicate URLs.');
-for (const page of searchIndex) assert(targetFile(new URL(page.url, 'https://zixuanb3.github.io')), `Missing search destination ${page.url}`);
+for (const page of searchIndex) assert(targetFile(new URL(page.url, siteURL)), `Missing search destination ${page.url}`);
 assert(homepage.includes('prefers-color-scheme') || fs.readFileSync(files.find(file => /site\.min.*\.css$/.test(file)) ?? files.find(file => /site\..*\.css$/.test(file)), 'utf8').includes('prefers-color-scheme'), 'System color preference is missing.');
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`Passed: ${htmlFiles.length} HTML pages, ${checkedLinks} internal references, ${checkedImages} image tags, ${searchIndex.length} searchable pages, navigation order, and fragment targets.`);

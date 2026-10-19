@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
 const root = path.resolve(import.meta.dirname, '..');
-const remote = 'https://github.com/zixuanb3/zixuanb3.github.io.git';
+const remote = 'https://github.com/zixuan-bao/zixuan-bao.github.io.git';
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, { cwd: root, encoding: 'utf8', windowsHide: true, env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }, ...options });
   if (result.error || result.status !== 0) {
@@ -35,7 +35,7 @@ try {
   else if (changed.status !== 0) throw new Error('无法检查待发布文件。');
   console.log('4 / 4 上传到 GitHub');
   run('git', ['push', '-u', 'origin', 'main'], { failure: '上传未完成。本机内容和版本已保留。若提示登录，请先双击 Connect-GitHub.cmd；若远程已有新修改，请先同步仓库。' });
-  console.log('\n上传成功。GitHub Pages 正在部署：\nhttps://github.com/zixuanb3/zixuanb3.github.io/actions\n公开网址：https://zixuanb3.github.io/');
+  console.log('\n上传成功。GitHub Pages 正在部署：\nhttps://github.com/zixuan-bao/zixuan-bao.github.io/actions\n公开网址：https://zixuan-bao.github.io/');
 } catch (error) {
   console.error('\n' + error.message);
   process.exit(1);

@@ -108,13 +108,13 @@ Update `content/privacy.md` when enabling any external service.
 
 ## Publish to GitHub Pages
 
-The build workflow publishes to **https://zixuanb3.github.io/** from the GitHub account **zixuanb3**. Normal updates can use the editor’s Publish button. The following steps describe first-time repository setup only.
+The build workflow publishes to **https://zixuan-bao.github.io/** from the **zixuan-bao** organization. Your personal GitHub account remains **zixuanb3** and manages the organization; keep signing in with that account. Normal updates can use the editor’s Publish button. The following steps describe first-time repository setup only.
 
-1. Create or use the repository `zixuanb3.github.io` without overwriting an existing website.
+1. Create or use the organization repository `zixuan-bao/zixuan-bao.github.io` without overwriting an existing website.
 2. Add the contents of this project to its `main` branch. Keep the vendored `themes/paige/` folder; exclude `.tools/`, `public/`, `resources/_gen/`, and any private files.
 3. Open repository **Settings → Pages → Source → GitHub Actions**.
 4. The included `.github/workflows/pages.yml` builds with pinned Hugo Extended 0.168.0 and deploys the output. It reads the configured Pages base URL.
-5. After the workflow succeeds, visit https://zixuanb3.github.io/.
+5. After the workflow succeeds, visit https://zixuan-bao.github.io/.
 
 The illustrative content can remain visibly marked while previewing the template publicly. After replacing it, turn off “显示模板示例提示” in the editor’s Personal Profile page, or set `demo = false` in `hugo.toml`. Demo mode adds an explanatory footer and `noindex` meta tags. Keeping demo mode on does not make files private; it only asks search engines not to index them.
 
