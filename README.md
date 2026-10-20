@@ -6,7 +6,7 @@ The current contents are illustrative. Stock photographs are not personal travel
 
 ## Form-based editing (recommended)
 
-Double-click **Edit-Website.vbs** (or **Edit-Website.cmd**) to open the local content editor at **http://localhost:1314/**. Edit the profile, homepage, fonts, navigation, About blocks, categories, entries, and galleries through forms. Save to preview, then click **发布到网站** to publish. The editor runs on this computer only and is not deployed as a public admin endpoint.
+Double-click **Edit-Website.cmd** in Windows File Explorer to open the local content editor at **http://localhost:1314/**. Keep its window open while editing. VBS is optional. Edit the profile, homepage, fonts, navigation, About blocks, categories, entries, and galleries through forms. Save to preview, then click **发布到网站** to publish. The editor runs on this computer only and is not deployed as a public admin endpoint.
 
 See [编辑器使用指南.md](编辑器使用指南.md) for the complete nontechnical guide. Existing Markdown and JSON files remain the source of truth. A fresh checkout initializes its editor dependencies automatically on first launch.
 
