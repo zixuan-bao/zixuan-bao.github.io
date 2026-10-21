@@ -4,13 +4,13 @@ authors:
   - Coauthor name
 date: 2026-09-18
 lastmod: 2026-10-10
-title: Places, people, and opportunity
-description: "An example of a working paper entry: introduce the question, describe the approach, and explain why the answer matters in a short abstract."
-status: Working paper
-image: /images/city.jpg
+title: "Non-cooperation Movement: Foot Voting and the Policy Dynamics in the Autocracy"
+description: ""
+status: In progress
+image: /images/uploads/front-page-bombay-chronicle-newspaper-india-asia-july-31-1920-1792609455414-bc80c1.webp
 image_alt: A city skyline used as an illustrative research thumbnail
 weight: 10
-link: /link-preview/?item=places-and-opportunity
+link: /link-preview/?item=non-cooperation
 link_label: View manuscript
 tags:
   - Cities

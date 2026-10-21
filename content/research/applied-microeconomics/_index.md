@@ -1,7 +1,10 @@
 ---
-title: Applied Microeconomics
-description: People, places, and the institutions connecting them.
+title: Development
+description: ""
 weight: 10
+authors: []
+tags: []
+series: []
 ---
 
 

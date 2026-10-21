@@ -1,5 +1,5 @@
 ---
-title: Copenhagen
+title: Amsterdam
 country: Denmark
 cover: /images/copenhagen.jpg
 cover_alt: Colorful buildings along the Copenhagen waterfront
@@ -15,6 +15,8 @@ description: A sample city collection, ready for your photographs and their stor
 tags:
   - Photography
   - Copenhagen
+authors: []
+series: []
 ---
 
 These stock images demonstrate the gallery layout. They are not personal travel photographs. Each photograph can have its own date, location, and caption.

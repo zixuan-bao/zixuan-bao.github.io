@@ -1,5 +1,5 @@
 ---
-title: Chicago
+title: Madison
 country: United States
 cover: /images/city.jpg
 cover_alt: A dense city skyline in warm evening light
@@ -21,6 +21,8 @@ description: A sample city collection, ready for your photographs and their stor
 tags:
   - Photography
   - Chicago
+authors: []
+series: []
 ---
 
 These stock images demonstrate the gallery layout. They are not personal travel photographs. Each photograph can have its own date, location, and caption.

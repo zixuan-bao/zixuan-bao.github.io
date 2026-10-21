@@ -1,5 +1,5 @@
 ---
-title: Kyoto
+title: Penang
 country: Japan
 cover: /images/kyoto.jpg
 cover_alt: A quiet Japanese street lined with traditional buildings
@@ -21,6 +21,8 @@ description: A sample city collection, ready for your photographs and their stor
 tags:
   - Photography
   - Kyoto
+authors: []
+series: []
 ---
 
 These stock images demonstrate the gallery layout. They are not personal travel photographs. Each photograph can have its own date, location, and caption.
